@@ -7,5 +7,5 @@ type Cleaner interface {
 type SimpleCleaner struct{}
 
 func (c *SimpleCleaner) Clean(entries []Entry) []Entry {
-
+    
 }

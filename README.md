@@ -56,7 +56,7 @@ Say, we already reduced the cadidates to a smaller set:
 
 ```
 1   G1  A1  K1,K2
-3   G2  A1  K1,K2
+3   G2  A1  K1,K2,K3
 ```
 
 Possible interface:
