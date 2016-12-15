@@ -1,21 +1,24 @@
-solrdups
-========
+groupcover
+==========
 
-SOLR based deduplication, very hard coded.
+Layered deduplication.
+
+Input:
 
 ```
-$ solrdups -fq "source_id:10 OR source_id:11" -by source_id -by doi -by institution
+id, group, attribute, keys
 ```
 
-This would look at all records that match the filter query. For each record,
-we would extract the doi and the institutions.
+Items from different groups may share an attribute. Depending on a order
+relation over groups, given for each key, a number of ids may be dropped for a
+key.
 
-    <SID> <ID>               <ISIL>
-    14    10.1201/21212.abc. [DE-15, DE-14, DE-Brt1]
+Example:
 
-Or
---
-
-Extract a list of fields from SOLR, like estab. Already supported:
-
-* http://localhost:8983/solr/select?q=ipod&fl=id,cat,name,popularity,price,score&wt=csv
+```
+$ cat fixture/sample.tsv
+1, G1, A1, K1, K2
+2, G1, A2, K1, K2
+3, G2, A1, K1, K2
+4, G2, A2, K1, K2
+```
