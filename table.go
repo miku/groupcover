@@ -59,8 +59,8 @@ func (t *Table) String() string {
 	return buf.String()
 }
 
-// FromReader reads from a reader and builds up a table.
-func FromReader(r io.Reader) (*Table, error) {
+// TableFromReader reads from a reader and builds up a table.
+func TableFromReader(r io.Reader) (*Table, error) {
 	br := bufio.NewReader(r)
 	var table Table
 	for {

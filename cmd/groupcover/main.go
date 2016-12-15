@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	table, err := groupcover.FromReader(os.Stdin)
+	table, err := groupcover.TableFromReader(os.Stdin)
 	if err != nil {
 		log.Fatal(err)
 	}
