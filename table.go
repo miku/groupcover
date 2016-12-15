@@ -75,7 +75,7 @@ type Table struct {
 func (t *Table) String() string {
 	var buf bytes.Buffer
 	for _, entry := range t.Entries {
-		s := fmt.Sprintf("%s\t%s\t%s\t%s", entry.ID, entry.Group, entry.Attr, strings.Join(entry.Keys, ", "))
+		s := fmt.Sprintf("%s\t%s\t%s\t%s\n", entry.ID, entry.Group, entry.Attr, strings.Join(entry.Keys, ", "))
 		io.WriteString(&buf, s)
 	}
 	return buf.String()

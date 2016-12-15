@@ -1,10 +1,6 @@
 package groupcover
 
-import (
-	"fmt"
-
-	"github.com/miku/groupcover/container"
-)
+import "github.com/miku/groupcover/container"
 
 type Cleaner interface {
 	Clean([]Entry) []Entry
@@ -29,12 +25,35 @@ func (c *SampleCleaner) Clean(entries []Entry) []Entry {
 		}
 	}
 
+	// preferred group for key
+	preferredGroup := make(map[string]string)
+
 	// group available choices by key
 	for k, v := range groups {
 		keys := v.Values()
-		// preferred value from available values for key k
-		preferred := c.Preferences[k].Preferred(keys...)
-		fmt.Println(k, v, preferred)
+		// preferred group for key k
+		preferredGroup[k] = c.Preferences[k].Preferred(keys...)
 	}
-	return entries
+
+	// update entries
+
+	var updatedEntries []Entry
+
+	for _, e := range entries {
+		var updatedKeys []string
+		for _, k := range e.Keys {
+			if e.Group == preferredGroup[k] {
+				updatedKeys = append(updatedKeys, k)
+			}
+		}
+		entry := Entry{
+			ID:    e.ID,
+			Group: e.Group,
+			Attr:  e.Attr,
+			Keys:  updatedKeys,
+		}
+		updatedEntries = append(updatedEntries, entry)
+	}
+
+	return updatedEntries
 }

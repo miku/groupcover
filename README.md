@@ -46,6 +46,13 @@ Various deduplication strategies:
 
 ```
 $ go run cmd/groupcover/main.go < fixtures/sample.tsv
+1   G1  A1  K1, K2
+2   G1  A2  K1, K2
+3   G2  A1  K1, K2, K3
+
+1   G1  A1  K1
+2   G1  A2  K1
+3   G2  A1  K2, K3
 ```
 
 ----

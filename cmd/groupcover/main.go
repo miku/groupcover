@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -18,8 +19,8 @@ func main() {
 	pm["K2"] = &groupcover.Preference{"G2", "G1"}
 	pm["K3"] = &groupcover.Preference{}
 
-	log.Println(pm)
-
+	fmt.Println(table)
 	cleaner := groupcover.SampleCleaner{Preferences: pm}
-	cleaner.Clean(table.Entries)
+	entries := cleaner.Clean(table.Entries)
+	fmt.Println(&groupcover.Table{Entries: entries})
 }
