@@ -12,16 +12,30 @@ import (
 // Preference is just a ordered group names.
 type Preference []string
 
+func (p Preference) String() string {
+	s := []string(p)
+	return fmt.Sprintf("[%s]", strings.Join(s, ", "))
+}
+
 // PreferenceMap maps keys to a Preference.
 type PreferenceMap map[string]*Preference
 
-func (p *Preference) Position(choice string) int {
-	for i, item := range *p {
+func (p Preference) Position(choice string) int {
+	for i, item := range p {
 		if item == choice {
 			return i
 		}
 	}
 	return 0
+}
+
+func (p PreferenceMap) String() string {
+	var buf bytes.Buffer
+	for k, v := range p {
+		s := fmt.Sprintf("%s prefers %s\n", k, v)
+		io.WriteString(&buf, s)
+	}
+	return buf.String()
 }
 
 func (p *Preference) Preferred(choices ...string) string {
@@ -75,7 +89,7 @@ type Table struct {
 func (t *Table) String() string {
 	var buf bytes.Buffer
 	for _, entry := range t.Entries {
-		s := fmt.Sprintf("%s\t%s\t%s\t%s\n", entry.ID, entry.Group, entry.Attr, strings.Join(entry.Keys, ", "))
+		s := fmt.Sprintf("%s\t%s\t%s\t[%s]\n", entry.ID, entry.Group, entry.Attr, strings.Join(entry.Keys, ", "))
 		io.WriteString(&buf, s)
 	}
 	return buf.String()
