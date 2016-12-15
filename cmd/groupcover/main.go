@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -13,5 +12,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(table)
+
+	pm := make(groupcover.PreferenceMap)
+	pm["K1"] = &groupcover.Preference{"G1", "G2"}
+	pm["K2"] = &groupcover.Preference{"G2", "G1"}
+	pm["K3"] = &groupcover.Preference{}
+
+	log.Println(pm)
+
+	cleaner := groupcover.SampleCleaner{Preferences: pm}
+	cleaner.Clean(table.Entries)
 }

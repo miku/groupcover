@@ -64,3 +64,7 @@ Possible interface:
     type Cleaner interface {
         Clean(entries []Entry) []Entry
     }
+
+How to group?
+
+* K1 -> G1, G2; K2 -> G1, G2; K3 -> G2

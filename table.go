@@ -13,7 +13,29 @@ import (
 type Preference []string
 
 // PreferenceMap maps keys to a Preference.
-type PreferenceMap map[string]Preference
+type PreferenceMap map[string]*Preference
+
+func (p *Preference) Position(choice string) int {
+	for i, item := range *p {
+		if item == choice {
+			return i
+		}
+	}
+	return 0
+}
+
+func (p *Preference) Preferred(choices ...string) string {
+	var preferred string
+	k := len(*p)
+	for _, c := range choices {
+		pos := p.Position(c)
+		if pos <= k {
+			preferred = c
+			k = pos
+		}
+	}
+	return preferred
+}
 
 // Entry represent the relevant attributes of a record.
 type Entry struct {
@@ -25,7 +47,7 @@ type Entry struct {
 
 // UnmarshalText unwraps a line into an Entry.
 func (e *Entry) UnmarshalText(text []byte) error {
-	parts := bytes.Split(text, []byte("\t"))
+	parts := bytes.Split(bytes.TrimSpace(text), []byte("\t"))
 	if len(parts) == 0 {
 		return nil
 	}
