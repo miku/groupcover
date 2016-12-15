@@ -47,3 +47,20 @@ Various deduplication strategies:
 ```
 $ go run cmd/groupcover/main.go < fixtures/sample.tsv
 ```
+
+----
+
+Notes.
+
+Say, we already reduced the cadidates to a smaller set:
+
+```
+1   G1  A1  K1,K2
+3   G2  A1  K1,K2
+```
+
+Possible interface:
+
+    type Cleaner interface {
+        Clean(entries []Entry) []Entry
+    }
