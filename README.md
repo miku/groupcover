@@ -41,3 +41,9 @@ Various deduplication strategies:
 * single attribute, exact match
 * single attribute, fuzzy match
 * multiple attributes, various stages, fuzzy matches
+
+----
+
+```
+$ go run cmd/groupcover/main.go < fixtures/sample.tsv
+```
