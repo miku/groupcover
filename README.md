@@ -22,3 +22,9 @@ $ cat fixture/sample.tsv
 3, G2, A1, K1, K2
 4, G2, A2, K1, K2
 ```
+
+Various deduplication strategies:
+
+* single attribute, exact match
+* single attribute, fuzzy match
+* multiple attributes, various stages, fuzzy matches
