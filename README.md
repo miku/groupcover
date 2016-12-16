@@ -44,3 +44,5 @@ $ jq -r '[
     .["doi"],
     .["x.labels"][]?] | @csv' < <(unpigz -c /tmp/AILicensing/date-2016-11-28.ldj.gz) > input.csv
 ```
+
+![](sketch.jpg)
