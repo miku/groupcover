@@ -1,28 +1,39 @@
 package main
 
 import (
-	"fmt"
+	"bufio"
+	"encoding/csv"
+	"io"
 	"log"
 	"os"
-
-	"github.com/miku/groupcover"
 )
 
+// sort -t ',' -k 3 fixtures/sample.tsv
 func main() {
-	table, err := groupcover.TableFromReader(os.Stdin)
-	if err != nil {
-		log.Fatal(err)
+	r := csv.NewReader(bufio.NewReader(os.Stdin))
+	r.Comma = ','
+
+	var batch []string
+
+	for {
+		record, err := r.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+		if len(batch) == 0 {
+			batch = append(batch, record[2])
+			continue
+		}
+		if record[2] != batch[len(batch)-1] {
+			log.Println("processing batch of %d items", len(batch))
+			log.Println(batch)
+			batch = nil
+		}
+		batch = append(batch, record[2])
 	}
 
-	pm := make(groupcover.PreferenceMap)
-	pm["K1"] = &groupcover.Preference{"G1", "G2"}
-	pm["K2"] = &groupcover.Preference{"G2", "G1"}
-	pm["K3"] = &groupcover.Preference{}
-
-	fmt.Println(pm)
-	fmt.Println(table)
-
-	cleaner := groupcover.SampleCleaner{Preferences: pm}
-	entries := cleaner.Clean(table.Entries)
-	fmt.Println(&groupcover.Table{Entries: entries})
+	log.Println("rest", batch)
 }
