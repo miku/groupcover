@@ -10,7 +10,8 @@ id, group, attribute, [key, key, ...]
 ```
 
 Items from different groups may share an attribute. Depending on a order
-relation over groups (per key), a number of keys may be dropped for an entry.
+relation over groups (possibly per key), a number of keys may be dropped for
+an entry.
 
 Simple case
 -----------
