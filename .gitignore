@@ -4,6 +4,7 @@ fixtures/changed.csv
 fixtures/105.csv
 fixtures/input.sorted.plus.105.csv
 fixtures/springer.ldj
+fixtures/changed.plus.105.csv
 groupcover*.deb
 groupcover*.rpm
 /packaging/deb/groupcover/usr/*
