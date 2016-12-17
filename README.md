@@ -73,15 +73,23 @@ $ groupcover < fixtures/mini.csv 2> /dev/null
 Finc Index
 ----------
 
-There is no DOI field in SOLR schema. The licensing information is available
-only in *AILicensing*, in intermediate schema.
+The licensing information is available e.g. in *AILicensing*, as intermediate
+format.
 
 ```shell
 $ jq -r '[
     .["finc.record_id"],
     .["finc.source_id"],
     .["doi"],
-    .["x.labels"][]?] | @csv' < <(unpigz -c /tmp/AILicensing/date-2016-11-28.ldj.gz) > input.csv
+    .["x.labels"][]?] | @csv' < <(unpigz -c /tmp/AILicensing/date-2016-11-28.ldj.gz)
+
+"ai-48-QkVGT19fTTgzMDMxOTUzMzcwLU0tRklaVC1ET01BLVpERUUtQkVGTy1JVEVD","48",,"DE-J59"
+"ai-48-QkVGT19fTTgzMDMxOTIwNjQ1LU0tRklaVC1ET01BLUJFRk8","48",,"DE-J59"
+"ai-48-QkVGT19fTTgzMDMxOTE3NjQ1LU0tRklaVC1ET01BLUJFRk8","48",,"DE-J59"
+...
+
 ```
+
+----
 
 ![](sketch.jpg)
