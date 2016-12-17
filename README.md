@@ -35,7 +35,7 @@ Examples
 --------
 
 ```shell
-cat fixtures/sample.csv
+$ cat fixtures/sample.csv
 id-1,group-1,value-1,Leipzig,Berlin
 id-2,group-2,value-1,Berlin,Dresden
 ```
