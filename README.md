@@ -25,7 +25,7 @@ Where *input.csv* has three or more columns:
 id, group, attribute, [key, key, ...]
 ```
 
-Items from different groups (e.g. a data source) may share an attribute value
+Items from different groups (e.g. data sources) may share an attribute value
 (e.g. ISBN or DOI). Depending on a preference over groups (possibly per key),
 a number of keys may be dropped for an entry.
 
@@ -40,8 +40,10 @@ id-1,group-1,value-1,Leipzig,Berlin
 id-2,group-2,value-1,Berlin,Dresden
 ```
 
-The Berlin key is repeated. By default, the group with the higher lexicographic value is choosen, so here Berlin
-stays at id-2, but gets dropped from id-1:
+This is a duplicate, because both id-1 and id-2 have the same value: value-1.
+The Berlin key is repeated. By default, the group with the higher
+lexicographic value is choosen, so after deduplication Berlin would stay at
+id-2, but would get dropped from id-1:
 
 ```shell
 $ groupcover < fixtures/sample.csv 2> /dev/null
