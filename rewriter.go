@@ -38,10 +38,10 @@ type ChoiceFunc func([]string) string
 type PreferenceMap map[string]ChoiceFunc
 
 // AttrFunc extracts an attribute from a CSV record.
-type AttrFunc func([]string) (string, error)
+type AttrFunc func(record []string) (string, error)
 
-// RewriterFunc rewrites a list of lines.
-type RewriterFunc func([][]string) ([][]string, error)
+// RewriterFunc rewrites a list of records.
+type RewriterFunc func(records [][]string) ([][]string, error)
 
 // LexChoice chooses the key with the highest lexicographic order. These
 // preferences may come from external sources.
