@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -14,6 +15,12 @@ type AttrFunc func([]string) (string, error)
 
 // RewriterFunc rewrites a list of lines.
 type RewriterFunc func([][]string) ([][]string, error)
+
+// ChoiceFunc presented with a list of choices, chooses one.
+type ChoiceFunc func([]string) string
+
+// PreferenceMap maps a string to a ChoiceFunc.
+type PreferenceMap map[string]ChoiceFunc
 
 // GroupLines takes a reader (over CSV) and a attribtue value extractor and
 // groups lines that have the same attribute. As with uniq, the lines must be
@@ -68,19 +75,57 @@ func main() {
 		return record[2], nil
 	}
 
-	// deduplicate keys
+	// lexChoice chooses the key with the highest lexicographic order.
+	lexChoice := func(s []string) string {
+		if len(s) == 0 {
+			return ""
+		}
+		sort.Strings(s)
+		return s[len(s)-1]
+	}
+
+	preferences := PreferenceMap{
+		"K1": lexChoice,
+		"K2": lexChoice,
+		"K3": lexChoice,
+	}
+
 	sampleRewriter := func(s [][]string) ([][]string, error) {
 		if len(s) < 2 {
 			return s, nil
 		}
-		// TODO(miku):
+
 		// 1. For each ISIL (keys) get the available groups.
-		// 2. For each ISIL (keys) get the preferred group.
-		// 3. For each lines, check the group and list the ISIL (keys) for which this group is the preferred.
-		for _, line := range s {
-			keys := strings.Split(line[3], ",")
-			log.Println(keys)
+		keyGroups := make(map[string][]string)
+		for _, record := range s {
+			group := record[1]
+			for _, key := range strings.Split(record[3], ",") {
+				keyGroups[key] = append(keyGroups[key], group)
+			}
 		}
+
+		// 2. For each ISIL (keys) get the preferred group.
+		preferredGroup := make(map[string]string)
+		for key, groups := range keyGroups {
+			f, ok := preferences[key]
+			if !ok {
+				log.Fatalf("no preference defined for %s", key)
+			}
+			preferredGroup[key] = f(groups)
+		}
+
+		// 3. For each lines, check the group and list the ISIL (keys) for which this group is the preferred.
+		for _, record := range s {
+			var updated []string
+			group := record[1]
+			for _, key := range strings.Split(record[3], ",") {
+				if preferredGroup[key] == group {
+					updated = append(updated, key)
+				}
+			}
+			record[3] = strings.Join(updated, ",")
+		}
+
 		return s, nil
 	}
 
