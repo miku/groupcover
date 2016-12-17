@@ -70,11 +70,11 @@ func main() {
 	//   },
 	//   ...
 
-	// If not set explicitly, defaults to lexicographic order of the group identifiers.
-	preferences := groupcover.PreferenceMap{}
-
 	// Use the third column as grouping criteria.
 	thirdColumn := groupcover.Column(2)
+
+	// If not set explicitly, defaults to lexicographic order of the group identifiers.
+	preferences := groupcover.PreferenceMap{}
 	// A simple rewriter, that considers per-key preferences.
 	rewriter := groupcover.SimpleRewriter(preferences)
 
