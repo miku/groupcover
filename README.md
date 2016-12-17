@@ -9,9 +9,9 @@ Input:
 id, group, attribute, [key, key, ...]
 ```
 
-Items from different groups may share an attribute. Depending on a order
-relation over groups (possibly per key), a number of keys may be dropped for
-an entry.
+Items from different groups may share an attribute value (e.g. ISBN or DOI).
+Depending on a order relation over groups (possibly per key), a number of keys
+may be dropped for an entry.
 
 Simple case
 -----------
