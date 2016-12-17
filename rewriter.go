@@ -37,6 +37,7 @@ func Column(k int) AttrFunc {
 		}
 		return record[k], nil
 	}
+	return f
 }
 
 // GroupLines reads CSV records from reader, extracts an attribute with
@@ -110,7 +111,7 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 
 		// For each key determine the preferred group.
 		preferred := make(map[string]string)
-		for key, groups := range keyGroups {
+		for key, groups := range groupsPerKey {
 			f, ok := preferences[key]
 			if !ok {
 				return nil, fmt.Errorf("no preference entry for %s", key)
@@ -124,7 +125,7 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 			var updated []string
 			group := record[1]
 			for _, key := range strings.Split(record[3], ",") {
-				if preferredGroup[key] == group {
+				if preferred[key] == group {
 					updated = append(updated, key)
 				}
 			}

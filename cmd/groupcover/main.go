@@ -9,17 +9,17 @@ import (
 
 func main() {
 	// Preference per key.
-	preferences := PreferenceMap{
-		"K1": lexChoice,
-		"K2": lexChoice,
-		"K3": lexChoice,
+	preferences := groupcover.PreferenceMap{
+		"K1": groupcover.LexChoice,
+		"K2": groupcover.LexChoice,
+		"K3": groupcover.LexChoice,
 	}
 	// Use the third column as grouping criteria.
 	thirdColumn := groupcover.Column(2)
 	// A simple rewriter, that has considers per key preferences.
-	rewriter := SimpleRewriter(preferences)
+	rewriter := groupcover.SimpleRewriter(preferences)
 
-	if err := GroupLines(os.Stdin, os.Stdout, thirdColumn, rewriter); err != nil {
+	if err := groupcover.GroupLines(os.Stdin, os.Stdout, thirdColumn, rewriter); err != nil {
 		log.Fatal(err)
 	}
 }
