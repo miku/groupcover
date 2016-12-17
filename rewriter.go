@@ -14,14 +14,14 @@ type ChoiceFunc func([]string) string
 // PreferenceMap maps a string to a ChoiceFunc.
 type PreferenceMap map[string]ChoiceFunc
 
-// Attr extracts an attribute from a CSV record.
+// AttrFunc extracts an attribute from a CSV record.
 type AttrFunc func([]string) (string, error)
 
 // RewriterFunc rewrites a list of lines.
 type RewriterFunc func([][]string) ([][]string, error)
 
 // LexChoice chooses the key with the highest lexicographic order. These
-// preference may come from external sources.
+// preferences may come from external sources.
 func LexChoice(s []string) string {
 	if len(s) == 0 {
 		return ""
