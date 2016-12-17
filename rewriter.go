@@ -194,3 +194,16 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 	}
 	return f
 }
+
+// Unique rewriter that only keeps the last row, just like the `uniq` tool.
+//
+// if err := groupcover.GroupRewrite(os.Stdin, os.Stdout, groupcover.Column(0), groupcover.Unique); err != nil {
+//     log.Fatal(err)
+// }
+//
+func Unique(records [][]string) ([][]string, error) {
+	if len(records) == 0 {
+		return nil, nil
+	}
+	return [][]string{records[len(records) - 1]}, nil
+}
