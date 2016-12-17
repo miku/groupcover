@@ -31,11 +31,25 @@ Process list:
 $ groupcover < sorted.list > cleaned.list
 ```
 
-Example
--------
+Examples
+--------
 
+```shell
+cat fixtures/sample.csv
+id-1,group-1,value-1,Leipzig,Berlin
+id-2,group-2,value-1,Berlin,Dresden
 ```
-$ $ cat fixtures/mini.csv
+
+The Berlin key is repeated. By default, the group with the higher lexicographic value is choosen, so here Berlin
+stays at id-2, but gets dropped from id-1:
+
+```shell
+$ groupcover < fixtures/sample.csv 2> /dev/null
+id-1,group-1,value-1,Leipzig
+```
+
+```shell
+$ cat fixtures/mini.csv
 1,G1,A1,K1,K2
 2,G1,A2,K1,K2
 3,G2,A2,K1,K2,K3
@@ -50,7 +64,7 @@ A,G2,A4,K2,K3
 
 Only the changed entries are written:
 
-```
+```shell
 $ groupcover < fixtures/mini.csv 2> /dev/null
 2,G1,A2
 3,G2,A2,K1,K3
@@ -63,7 +77,7 @@ Finc Index
 There is no DOI field in SOLR schema. The licensing information is available
 only in *AILicensing*, in intermediate schema.
 
-```
+```shell
 $ jq -r '[
     .["finc.record_id"],
     .["finc.source_id"],

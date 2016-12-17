@@ -1,3 +1,2 @@
-1,G1,A1,K1,K2
-2,G1,A2,K1,K2
-3,G2,A1,K1,K2,K3
+id-1,group-1,value-1,Leipzig,Berlin
+id-2,group-2,value-1,Berlin,Dresden
