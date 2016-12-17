@@ -64,6 +64,9 @@ func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc Rewr
 		if err != nil {
 			return err
 		}
+		if attr == "" {
+			continue
+		}
 		if attr != prev {
 			regroup, err := rewriterFunc(group)
 			if err != nil {
