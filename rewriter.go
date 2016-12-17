@@ -163,23 +163,23 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 		// this group is the preferred.
 		for _, record := range records {
 			var updated []string
-			group := record[1]
+			id, group, keys := record[0], record[1], record[3:]
 
-			for _, key := range record[3:] {
+			for _, key := range keys {
 				if preferred[key] == group {
 					updated = append(updated, key)
 				}
 			}
 
 			// Keep only lines that changed.
-			current := make([]string, len(record[3:]))
-			copy(current, record[3:])
+			current := make([]string, len(keys))
+			copy(current, keys)
 
 			sort.Strings(current)
 			sort.Strings(updated)
 
 			if !reflect.DeepEqual(current, updated) {
-				log.Printf("keys changed from %s to %s for %s", current, updated, record[0])
+				log.Printf("keys changed from %s to %s for %s", current, updated, id)
 				// Assemble a new record.
 				record := []string{record[0], record[1], record[2]}
 				record = append(record, updated...)
