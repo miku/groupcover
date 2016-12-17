@@ -40,10 +40,10 @@ id-1,group-1,value-1,Leipzig,Berlin
 id-2,group-2,value-1,Berlin,Dresden
 ```
 
-This is a duplicate, because both id-1 and id-2 have the same value: value-1.
-The Berlin key is repeated. By default, the group with the higher
-lexicographic value is choosen, so after deduplication Berlin would stay at
-id-2, but would get dropped from id-1:
+This is a duplicate (but only for Berlin), because both id-1 and id-2 have the
+same value: value-1. The Berlin key is repeated. By default, the group with
+the higher lexicographic value is choosen, so after deduplication Berlin would
+stay at id-2, but would get dropped from id-1:
 
 ```shell
 $ groupcover < fixtures/sample.csv 2> /dev/null
