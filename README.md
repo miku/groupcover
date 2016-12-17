@@ -35,21 +35,26 @@ Example
 -------
 
 ```
-$ cat fixtures/mini.csv
-1,G1,A1,"K1,K2"
-2,G1,A2,"K1,K2"
-3,G2,A2,"K1,K2,K3"
-4,G3,A2,"K2"
-5,G1,A3,"K1,K2,K3"
-6,G2,A3,"K2,K3"
-
-$ groupcover < fixtures/mini.csv
-1,G1,A1,"K1,K2"
-2,G1,A2,
-3,G2,A2,"K1,K3"
+$ $ cat fixtures/mini.csv
+1,G1,A1,K1,K2
+2,G1,A2,K1,K2
+3,G2,A2,K1,K2,K3
 4,G3,A2,K2
+5,G1,A3,K1,K2,K3
+6,G2,A3,K2,K3
+7,G1,,K2,K3
+8,G2,,K2,K3
+9,G2,A4,K2,K3
+A,G2,A4,K2,K3
+```
+
+Only the changed entries are written:
+
+```
+$ groupcover < fixtures/mini.csv 2> /dev/null
+2,G1,A2
+3,G2,A2,K1,K3
 5,G1,A3,K1
-6,G2,A3,"K2,K3"
 ```
 
 Finc Index

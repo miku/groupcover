@@ -126,10 +126,11 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 		// For each key determine the preferred group.
 		preferred := make(map[string]string)
 		for key, groups := range groupsPerKey {
-			f, ok := preferences[key]
-			if !ok {
-				return nil, fmt.Errorf("no preference entry for %s", key)
+			if _, ok := preferences[key]; !ok {
+				preferences[key] = LexChoice
+				log.Printf("no preference for %s, using lexicographic default", key)
 			}
+			f := preferences[key]
 			preferred[key] = f(groups)
 		}
 
@@ -138,7 +139,6 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 
 		// For each record, check the group and list the ISIL (keys) for which
 		// this group is the preferred.
-		// TODO(miku): Only give away key once.
 		for _, record := range s {
 			var updated []string
 			group := record[1]
