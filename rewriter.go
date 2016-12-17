@@ -14,13 +14,14 @@ type ChoiceFunc func([]string) string
 // PreferenceMap maps a string to a ChoiceFunc.
 type PreferenceMap map[string]ChoiceFunc
 
-// Attr extract an attribute from a CSV record.
+// Attr extracts an attribute from a CSV record.
 type AttrFunc func([]string) (string, error)
 
 // RewriterFunc rewrites a list of lines.
 type RewriterFunc func([][]string) ([][]string, error)
 
-// LexChoice chooses the key with the highest lexicographic order.
+// LexChoice chooses the key with the highest lexicographic order. These
+// preference may come from external sources.
 func LexChoice(s []string) string {
 	if len(s) == 0 {
 		return ""
@@ -40,11 +41,11 @@ func Column(k int) AttrFunc {
 	return f
 }
 
-// GroupLines reads CSV records from reader, extracts an attribute with
+// GroupRewrite reads CSV records from reader, extracts an attribute with
 // attrFunc, groups subsequent lines with the same attribute value and passes
 // these groups to rewriterFunc. The rewritten lines are written as CSV to the
 // given writer.
-func GroupLines(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc RewriterFunc) error {
+func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc RewriterFunc) error {
 	cr := csv.NewReader(r)
 	cw := csv.NewWriter(w)
 

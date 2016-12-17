@@ -16,10 +16,12 @@ func main() {
 	}
 	// Use the third column as grouping criteria.
 	thirdColumn := groupcover.Column(2)
-	// A simple rewriter, that has considers per key preferences.
+	// A simple rewriter, that considers per-key preferences.
 	rewriter := groupcover.SimpleRewriter(preferences)
 
-	if err := groupcover.GroupLines(os.Stdin, os.Stdout, thirdColumn, rewriter); err != nil {
+	// Read from stdin, write to stdout, use third column as grouping criteria
+	// and rewriter as rewriter.
+	if err := groupcover.GroupRewrite(os.Stdin, os.Stdout, thirdColumn, rewriter); err != nil {
 		log.Fatal(err)
 	}
 }
