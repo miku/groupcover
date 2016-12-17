@@ -3,6 +3,15 @@ groupcover
 
 Staged deduplication.
 
+Test drive
+----------
+
+```shell
+$ go get github.com/miku/groupcover/cmd/groupcover
+```
+
+Or via [packages](https://github.com/miku/groupcover/releases).
+
 Usage
 -----
 
@@ -17,10 +26,10 @@ id, group, attribute, [key, key, ...]
 ```
 
 Items from different groups (e.g. a data source) may share an attribute value
-(e.g. ISBN or DOI). Depending on a order relation over groups (possibly per
-key), a number of keys may be dropped for an entry.
+(e.g. ISBN or DOI). Depending on a preference over groups (possibly per key),
+a number of keys may be dropped for an entry.
 
-The CSV file must already be sorted by attribute.
+The CSV file *must* already *be sorted by attribute*.
 
 Examples
 --------
