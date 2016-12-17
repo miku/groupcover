@@ -125,6 +125,7 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 
 		// For each record, check the group and list the ISIL (keys) for which
 		// this group is the preferred.
+		// TODO(miku): Only give away key once.
 		for _, record := range s {
 			var updated []string
 			group := record[1]
