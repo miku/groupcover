@@ -4,6 +4,8 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
+	"log"
+	"reflect"
 	"sort"
 	"strings"
 )
@@ -36,7 +38,7 @@ func Column(k int) AttrFunc {
 		if k >= len(record) {
 			return "", fmt.Errorf("invalid column: got %d, record has only %d", k, len(record))
 		}
-		return record[k], nil
+		return strings.TrimSpace(record[k]), nil
 	}
 	return f
 }
@@ -47,6 +49,9 @@ func Column(k int) AttrFunc {
 // given writer.
 func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc RewriterFunc) error {
 	cr := csv.NewReader(r)
+	// If FieldsPerRecord is negative, no check is made and records may have a variable number of fields.
+	cr.FieldsPerRecord = -1
+
 	cw := csv.NewWriter(w)
 
 	var prev string
@@ -98,19 +103,28 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 			return s, nil
 		}
 
+		// Only keep comparable records.
+		var valid [][]string
+
 		// Basic sanity check.
 		for _, record := range s {
-			if len(record) != 4 {
-				return nil, fmt.Errorf("expected 4 columns: ID, GROUP, ATTRIBUTE, KEYS")
+			if len(record) < 4 {
+				continue
 			}
+			valid = append(valid, record)
 		}
+
+		s = valid
 
 		// For each key get the associated groups.
 		groupsPerKey := make(map[string][]string)
 		for _, record := range s {
-			for _, key := range strings.Split(record[3], ",") {
+			for _, key := range record[3:] {
 				groupsPerKey[key] = append(groupsPerKey[key], record[1])
 			}
+			// for _, key := range strings.Split(record[3], ",") {
+			// 	groupsPerKey[key] = append(groupsPerKey[key], record[1])
+			// }
 		}
 
 		// For each key determine the preferred group.
@@ -129,11 +143,30 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 		for _, record := range s {
 			var updated []string
 			group := record[1]
-			for _, key := range strings.Split(record[3], ",") {
+
+			for _, key := range record[3:] {
 				if preferred[key] == group {
 					updated = append(updated, key)
 				}
 			}
+			// for _, key := range strings.Split(record[3], ",") {
+			// 	if preferred[key] == group {
+			// 		updated = append(updated, key)
+			// 	}
+			// }
+
+			// notify about change
+			var current []string
+			for _, item := range record[3:] {
+				current = append(current, item)
+			}
+			sort.Strings(current)
+			sort.Strings(updated)
+			if !reflect.DeepEqual(current, updated) {
+				log.Printf("keys changed from %s to %s for %s", current, updated, record[0])
+			}
+
+			// TODO(miku): choose a format
 			record[3] = strings.Join(updated, ",")
 		}
 
