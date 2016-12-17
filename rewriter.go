@@ -195,13 +195,13 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 	return f
 }
 
-// Unique rewriter that only keeps the last row, just like uniq(1).
+// LastRow rewriter that only keeps the last row, similar to uniq(1).
 //
-// if err := GroupRewrite(os.Stdin, os.Stdout, Column(0), Unique); err != nil {
+// if err := GroupRewrite(os.Stdin, os.Stdout, Column(0), LastRow); err != nil {
 //     log.Fatal(err)
 // }
 //
-func Unique(records [][]string) ([][]string, error) {
+func LastRow(records [][]string) ([][]string, error) {
 	if len(records) == 0 {
 		return nil, nil
 	}
