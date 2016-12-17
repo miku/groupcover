@@ -61,7 +61,7 @@ Finc Index
 ----------
 
 There is no DOI field in SOLR schema. The licensing information is available
-only in *AILicensing*.
+only in *AILicensing*, in intermediate schema.
 
 ```
 $ jq -r '[
