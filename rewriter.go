@@ -34,17 +34,18 @@ import (
 // ChoiceFunc presented with a list of choices, chooses one.
 type ChoiceFunc func([]string) string
 
-// PreferenceMap maps a string to a ChoiceFunc.
+// PreferenceMap groups many choices by key.
 type PreferenceMap map[string]ChoiceFunc
 
-// AttrFunc extracts an attribute from a CSV record.
+// AttrFunc extracts an attribute value from a CSV record. Example values
+// could be a single column, part of a column or a value spanning multiple
+// columns.
 type AttrFunc func(record []string) (string, error)
 
 // RewriterFunc rewrites a list of records.
 type RewriterFunc func(records [][]string) ([][]string, error)
 
-// LexChoice chooses the key with the highest lexicographic order. These
-// preferences may come from external sources.
+// LexChoice chooses the key with the highest lexicographic order.
 func LexChoice(s []string) string {
 	if len(s) == 0 {
 		return ""
@@ -53,7 +54,8 @@ func LexChoice(s []string) string {
 	return s[len(s)-1]
 }
 
-// Column returns an AttrFunc, that extracts the given column value.
+// Column returns an AttrFunc, that extracts the value at a given column,
+// zero-based.
 func Column(k int) AttrFunc {
 	f := func(record []string) (string, error) {
 		if k >= len(record) {
@@ -64,13 +66,12 @@ func Column(k int) AttrFunc {
 	return f
 }
 
-// GroupRewrite reads CSV records from reader, extracts an attribute with
-// attrFunc, groups subsequent lines with the same attribute value and passes
-// these groups to rewriterFunc. The rewritten lines are written as CSV to the
-// given writer.
+// GroupRewrite reads CSV records from a given reader, extracts attribute
+// values with attrFunc, groups subsequent records with the same attribute
+// value and passes these groups to a rewriter. The altered records are
+// written as CSV to the given writer.
 func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc RewriterFunc) error {
 	cw := csv.NewWriter(w)
-
 	cr := csv.NewReader(r)
 	// If FieldsPerRecord is negative, no check is made and records may have a
 	// variable number of fields.
@@ -87,14 +88,14 @@ func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc Rewr
 		if err != nil {
 			return err
 		}
-		attr, err := attrFunc(record)
+		value, err := attrFunc(record)
 		if err != nil {
 			return err
 		}
-		if attr == "" {
+		if value == "" {
 			continue
 		}
-		if attr != prev {
+		if value != prev {
 			regroup, err := rewriterFunc(group)
 			if err != nil {
 				return err
@@ -105,7 +106,7 @@ func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc Rewr
 			group = nil
 		}
 		group = append(group, record)
-		prev = attr
+		prev = value
 	}
 
 	// Final group.
@@ -116,8 +117,10 @@ func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc Rewr
 	return cw.WriteAll(regroup)
 }
 
-// SimpleRewriter attempts key deduplication. SimpleRewriter takes a
-// preference map and returns a rewriter.
+// SimpleRewriter takes a preference map (which key is interested in which
+// group) and returns a rewriter, which drops certain keys that are assigned
+// to records from multiple groups with the same attribute value. This
+// rewriter returns only differing records.
 func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 	f := func(records [][]string) ([][]string, error) {
 		// A single entry does not need any deduplication.
