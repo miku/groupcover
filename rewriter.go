@@ -48,11 +48,10 @@ func Column(k int) AttrFunc {
 // these groups to rewriterFunc. The rewritten lines are written as CSV to the
 // given writer.
 func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc RewriterFunc) error {
+	cw := csv.NewWriter(w)
 	cr := csv.NewReader(r)
 	// If FieldsPerRecord is negative, no check is made and records may have a variable number of fields.
 	cr.FieldsPerRecord = -1
-
-	cw := csv.NewWriter(w)
 
 	var prev string
 	var group [][]string
@@ -86,7 +85,7 @@ func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc Rewr
 		prev = attr
 	}
 
-	// final group
+	// Final group.
 	regroup, err := rewriterFunc(group)
 	if err != nil {
 		return err
@@ -100,7 +99,7 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 	f := func(s [][]string) ([][]string, error) {
 		// A single entry does not need any deduplication.
 		if len(s) < 2 {
-			return s, nil
+			return nil, nil
 		}
 
 		// Only keep comparable records.
@@ -122,9 +121,6 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 			for _, key := range record[3:] {
 				groupsPerKey[key] = append(groupsPerKey[key], record[1])
 			}
-			// for _, key := range strings.Split(record[3], ",") {
-			// 	groupsPerKey[key] = append(groupsPerKey[key], record[1])
-			// }
 		}
 
 		// For each key determine the preferred group.
@@ -136,6 +132,9 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 			}
 			preferred[key] = f(groups)
 		}
+
+		// Collect changed records here.
+		var changedRecords [][]string
 
 		// For each record, check the group and list the ISIL (keys) for which
 		// this group is the preferred.
@@ -149,28 +148,25 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 					updated = append(updated, key)
 				}
 			}
-			// for _, key := range strings.Split(record[3], ",") {
-			// 	if preferred[key] == group {
-			// 		updated = append(updated, key)
-			// 	}
-			// }
 
-			// notify about change
+			// Only lines that changed
 			var current []string
 			for _, item := range record[3:] {
 				current = append(current, item)
 			}
+
 			sort.Strings(current)
 			sort.Strings(updated)
+
 			if !reflect.DeepEqual(current, updated) {
 				log.Printf("keys changed from %s to %s for %s", current, updated, record[0])
+				record := []string{record[0], record[1], record[2]}
+				record = append(record, updated...)
+				changedRecords = append(changedRecords, record)
 			}
-
-			// TODO(miku): choose a format
-			record[3] = strings.Join(updated, ",")
 		}
 
-		return s, nil
+		return changedRecords, nil
 	}
 	return f
 }
