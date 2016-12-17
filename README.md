@@ -3,33 +3,24 @@ groupcover
 
 Staged deduplication.
 
-Input:
+Usage
+-----
+
+```shell
+$ groupcover < input.csv > changes.csv
+```
+
+Where *input.csv* has three or more columns:
 
 ```
 id, group, attribute, [key, key, ...]
 ```
 
-Items from different groups may share an attribute value (e.g. ISBN or DOI).
-Depending on a order relation over groups (possibly per key), a number of keys
-may be dropped for an entry.
+Items from different groups (e.g. a data source) may share an attribute value
+(e.g. ISBN or DOI). Depending on a order relation over groups (possibly per
+key), a number of keys may be dropped for an entry.
 
-Simple case
------------
-
-We have a single valued attribute, e.g. a DOI or an ISBN. We sort the input
-the attribute and then process the list.
-
-Sort by attribute:
-
-```shell
-$ sort -k3 < input.list > sorted.list
-```
-
-Process list:
-
-```shell
-$ groupcover < sorted.list > cleaned.list
-```
+The CSV file must already be sorted by attribute.
 
 Examples
 --------
@@ -48,6 +39,8 @@ $ groupcover < fixtures/sample.csv 2> /dev/null
 id-1,group-1,value-1,Leipzig
 ```
 
+Another example.
+
 ```shell
 $ cat fixtures/mini.csv
 1,G1,A1,K1,K2
@@ -60,6 +53,12 @@ $ cat fixtures/mini.csv
 8,G2,,K2,K3
 9,G2,A4,K2,K3
 A,G2,A4,K2,K3
+```
+
+To sort CSV by attribute:
+
+```shell
+sort -t, -k3 fixtures/mini.csv
 ```
 
 Only the changed entries are written:
