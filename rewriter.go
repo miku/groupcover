@@ -171,17 +171,16 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 				}
 			}
 
-			// Only lines that changed
-			var current []string
-			for _, item := range record[3:] {
-				current = append(current, item)
-			}
+			// Keep only lines that changed.
+			current := make([]string, len(record[3:]))
+			copy(current, record[3:])
 
 			sort.Strings(current)
 			sort.Strings(updated)
 
 			if !reflect.DeepEqual(current, updated) {
 				log.Printf("keys changed from %s to %s for %s", current, updated, record[0])
+				// Assemble a new record.
 				record := []string{record[0], record[1], record[2]}
 				record = append(record, updated...)
 				changedRecords = append(changedRecords, record)
