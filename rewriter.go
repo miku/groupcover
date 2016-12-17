@@ -119,27 +119,27 @@ func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc Rewr
 // SimpleRewriter attempts key deduplication. SimpleRewriter takes a
 // preference map and returns a rewriter.
 func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
-	f := func(s [][]string) ([][]string, error) {
+	f := func(records [][]string) ([][]string, error) {
 		// A single entry does not need any deduplication.
-		if len(s) < 2 {
+		if len(records) < 2 {
 			return nil, nil
 		}
 
 		// Only keep comparable records.
 		var valid [][]string
 
-		for _, record := range s {
+		for _, record := range records {
 			if len(record) < 4 {
 				continue
 			}
 			valid = append(valid, record)
 		}
 
-		s = valid
+		records = valid
 
 		// For each key get the associated groups.
 		groupsPerKey := make(map[string][]string)
-		for _, record := range s {
+		for _, record := range records {
 			for _, key := range record[3:] {
 				groupsPerKey[key] = append(groupsPerKey[key], record[1])
 			}
@@ -161,7 +161,7 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 
 		// For each record, check the group and list the ISIL (keys) for which
 		// this group is the preferred.
-		for _, record := range s {
+		for _, record := range records {
 			var updated []string
 			group := record[1]
 
