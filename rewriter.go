@@ -195,9 +195,9 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 	return f
 }
 
-// Unique rewriter that only keeps the last row, just like the `uniq` tool.
+// Unique rewriter that only keeps the last row, just like uniq(1).
 //
-// if err := groupcover.GroupRewrite(os.Stdin, os.Stdout, groupcover.Column(0), groupcover.Unique); err != nil {
+// if err := GroupRewrite(os.Stdin, os.Stdout, Column(0), Unique); err != nil {
 //     log.Fatal(err)
 // }
 //
