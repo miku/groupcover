@@ -28,6 +28,7 @@ func main() {
 		"DE-D13":    groupcover.LexChoice,
 		"DE-D161":   groupcover.LexChoice,
 		"DE-Gla1":   groupcover.LexChoice,
+		"DE-Kn38":   groupcover.LexChoice,
 		"DE-L152":   groupcover.LexChoice,
 		"DE-Zi4":    groupcover.LexChoice,
 		"DE-Zwi2":   groupcover.LexChoice,
