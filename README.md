@@ -31,6 +31,25 @@ Process list:
 $ groupcover < sorted.list > cleaned.list
 ```
 
+Example
+-------
+
+```
+$ cat fixtures/mini.csv
+1,G1,A1,"K1,K2"
+2,G1,A2,"K1,K2"
+3,G2,A2,"K1,K2,K3"
+4,G3,A2,"K2"
+5,G2,A1,"K1,K2,K3"
+
+$ go run cmd/groupcover/main.go < fixtures/mini.csv
+1,G1,A1,"K1,K2"
+2,G1,A2,
+3,G2,A2,"K1,K3"
+4,G3,A2,K2
+5,G2,A1,"K1,K2,K3"
+```
+
 Finc Index
 ----------
 
