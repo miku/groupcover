@@ -74,13 +74,13 @@ func main() {
 	preferences := groupcover.PreferenceMap{}
 
 	// Use the third column as grouping criteria.
-	criteria := groupcover.Column(2)
+	thirdColumn := groupcover.Column(2)
 	// A simple rewriter, that considers per-key preferences.
 	rewriter := groupcover.SimpleRewriter(preferences)
 
 	// Read from stdin, write to stdout, use third column as grouping criteria
 	// and rewriter as rewriter.
-	if err := groupcover.GroupRewrite(os.Stdin, os.Stdout, criteria, rewriter); err != nil {
+	if err := groupcover.GroupRewrite(os.Stdin, os.Stdout, thirdColumn, rewriter); err != nil {
 		log.Fatal(err)
 	}
 }

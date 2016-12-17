@@ -70,8 +70,10 @@ func Column(k int) AttrFunc {
 // given writer.
 func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc RewriterFunc) error {
 	cw := csv.NewWriter(w)
+
 	cr := csv.NewReader(r)
-	// If FieldsPerRecord is negative, no check is made and records may have a variable number of fields.
+	// If FieldsPerRecord is negative, no check is made and records may have a
+	// variable number of fields.
 	cr.FieldsPerRecord = -1
 
 	var prev string
@@ -126,7 +128,6 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 		// Only keep comparable records.
 		var valid [][]string
 
-		// Basic sanity check.
 		for _, record := range s {
 			if len(record) < 4 {
 				continue
