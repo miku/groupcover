@@ -23,12 +23,15 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"runtime/pprof"
 
 	"github.com/miku/groupcover"
 )
+
+const Version = "0.0.2"
 
 func main() {
 	// Preference per key.
@@ -73,7 +76,14 @@ func main() {
 	//   ...
 
 	cpuprofile := flag.String("cpuprofile", "", "path to pprof output")
+	version := flag.Bool("version", false, "show version")
+
 	flag.Parse()
+
+	if *version {
+		fmt.Println(Version)
+		os.Exit(0)
+	}
 
 	if *cpuprofile != "" {
 		f, err := os.Create(*cpuprofile)
