@@ -181,15 +181,15 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 			sort.Strings(current)
 			sort.Strings(updated)
 
-			if !reflect.DeepEqual(current, updated) {
-				log.Printf("keys changed from %s to %s for %s", current, updated, id)
-				// Assemble a new record.
-				record := []string{record[0], record[1], record[2]}
-				record = append(record, updated...)
-				changedRecords = append(changedRecords, record)
+			if reflect.DeepEqual(current, updated) {
+				continue
 			}
-		}
 
+			log.Printf("keys changed from %s to %s for %s", current, updated, id)
+			// Assemble a new record.
+			record := append([]string{record[0], record[1], record[2]}, updated...)
+			changedRecords = append(changedRecords, record)
+		}
 		return changedRecords, nil
 	}
 	return f
