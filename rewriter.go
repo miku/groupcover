@@ -205,5 +205,5 @@ func LastRow(records [][]string) ([][]string, error) {
 	if len(records) == 0 {
 		return nil, nil
 	}
-	return [][]string{records[len(records) - 1]}, nil
+	return [][]string{records[len(records)-1]}, nil
 }
