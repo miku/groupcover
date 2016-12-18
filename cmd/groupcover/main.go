@@ -22,8 +22,10 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
+	"runtime/pprof"
 
 	"github.com/miku/groupcover"
 )
@@ -69,6 +71,18 @@ func main() {
 	//     "sourceID_dedup": "0;108;120;16;17;18;19;26;63;72;74;84;86"
 	//   },
 	//   ...
+
+	cpuprofile := flag.String("cpuprofile", "", "path to pprof output")
+	flag.Parse()
+
+	if *cpuprofile != "" {
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
 
 	// Use the third column as grouping criteria.
 	thirdColumn := groupcover.Column(2)
