@@ -45,7 +45,7 @@ type AttrFunc func(record []string) (string, error)
 // RewriterFunc rewrites a list of records.
 type RewriterFunc func(records [][]string) ([][]string, error)
 
-// LexChoice chooses the key with the highest lexicographic order.
+// LexChoice chooses the key with the highest lexicographic value.
 func LexChoice(s []string) string {
 	if len(s) == 0 {
 		return ""
