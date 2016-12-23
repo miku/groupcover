@@ -78,6 +78,7 @@ func main() {
 
 	prefs := flag.String("prefs", "", "space separated string of preferences (most preferred first), e.g. 'B A C'")
 	cpuprofile := flag.String("cpuprofile", "", "path to pprof output")
+	verbose := flag.Bool("verbose", false, "more output")
 	version := flag.Bool("version", false, "show version")
 
 	flag.Parse()
@@ -95,6 +96,8 @@ func main() {
 		pprof.StartCPUProfile(f)
 		defer pprof.StopCPUProfile()
 	}
+
+	groupcover.Verbose = *verbose
 
 	// Use the third column as grouping criteria.
 	thirdColumn := groupcover.Column(2)

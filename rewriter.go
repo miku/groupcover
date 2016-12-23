@@ -32,7 +32,10 @@ import (
 )
 
 // DefaultChoiceFunc to use, when there is not entry in preferences.
-var DefaultChoiceFunc ChoiceFunc = LexChoice
+var (
+	DefaultChoiceFunc ChoiceFunc = LexChoice
+	Verbose                      = true
+)
 
 // ChoiceFunc presented with a list of choices, chooses one.
 type ChoiceFunc func([]string) string
@@ -210,7 +213,10 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 				continue
 			}
 
-			log.Printf("%s -> %s [%s]", keys, updated, id)
+			if Verbose {
+				log.Printf("%s -> %s [%s]", keys, updated, id)
+			}
+
 			// Assemble a new record.
 			record := append([]string{record[0], record[1], record[2]}, updated...)
 			changedRecords = append(changedRecords, record)
