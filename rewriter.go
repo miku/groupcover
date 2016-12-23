@@ -31,8 +31,8 @@ import (
 	"strings"
 )
 
-// DefaultChoiceFunc to use, when there is not entry in preferences.
 var (
+	// DefaultChoiceFunc to use, when there is not entry in preferences.
 	DefaultChoiceFunc ChoiceFunc = LexChoice
 	Verbose                      = true
 )
