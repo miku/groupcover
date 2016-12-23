@@ -31,6 +31,9 @@ import (
 	"strings"
 )
 
+// DefaultChoiceFunc to use, when there is not entry in preferences.
+var DefaultChoiceFunc ChoiceFunc = LexChoice
+
 // ChoiceFunc presented with a list of choices, chooses one.
 type ChoiceFunc func([]string) string
 
@@ -52,6 +55,32 @@ func LexChoice(s []string) string {
 	}
 	sort.Strings(s)
 	return s[len(s)-1]
+}
+
+// ListChooser take a preference list (most preferred first).
+func ListChooser(preferences []string) ChoiceFunc {
+	if len(preferences) == 0 {
+		panic("preferences cannot be empty")
+	}
+	f := func(s []string) string {
+		if len(s) == 0 {
+			return preferences[0]
+		}
+
+		// Take note of position of each element in preferences.
+		positions := make([]int, len(s))
+		for i, c := range s {
+			for j, p := range preferences {
+				if c == p {
+					positions[i] = j
+				}
+			}
+		}
+
+		sort.Ints(positions)
+		return preferences[positions[0]]
+	}
+	return f
 }
 
 // Column returns an AttrFunc, that extracts the value at a given column,
@@ -152,8 +181,7 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 		preferred := make(map[string]string)
 		for key, groups := range groupsPerKey {
 			if _, ok := preferences[key]; !ok {
-				preferences[key] = LexChoice
-				log.Printf("no preference for %s, using lexicographic default", key)
+				preferences[key] = DefaultChoiceFunc
 			}
 			f := preferences[key]
 			preferred[key] = f(groups)
@@ -182,7 +210,7 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 				continue
 			}
 
-			log.Printf("keys changed from %s to %s for %s", keys, updated, id)
+			log.Printf("%s -> %s [%s]", keys, updated, id)
 			// Assemble a new record.
 			record := append([]string{record[0], record[1], record[2]}, updated...)
 			changedRecords = append(changedRecords, record)

@@ -27,6 +27,7 @@ import (
 	"log"
 	"os"
 	"runtime/pprof"
+	"strings"
 
 	"github.com/miku/groupcover"
 )
@@ -75,6 +76,7 @@ func main() {
 	//   },
 	//   ...
 
+	prefs := flag.String("prefs", "", "space separated string of preferences (most preferred first), e.g. 'B A C'")
 	cpuprofile := flag.String("cpuprofile", "", "path to pprof output")
 	version := flag.Bool("version", false, "show version")
 
@@ -97,10 +99,12 @@ func main() {
 	// Use the third column as grouping criteria.
 	thirdColumn := groupcover.Column(2)
 
-	// If not set explicitly, defaults to lexicographic order of the group identifiers.
-	preferences := groupcover.PreferenceMap{}
-	// A simple rewriter, that considers per-key preferences.
-	rewriter := groupcover.SimpleRewriter(preferences)
+	if *prefs != "" {
+		groupcover.DefaultChoiceFunc = groupcover.ListChooser(strings.Fields(*prefs))
+	}
+	// A simple rewriter, that considers per-key preferences. First, test with
+	// the same default for all keys (groupcover.DefaultChoiceFunc).
+	rewriter := groupcover.SimpleRewriter(groupcover.PreferenceMap{})
 
 	// Read from stdin, write to stdout, use third column as grouping criteria
 	// and rewriter as rewriter.
