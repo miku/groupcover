@@ -60,7 +60,8 @@ func LexChoice(s []string) string {
 	return s[len(s)-1]
 }
 
-// ListChooser take a preference list (most preferred first).
+// ListChooser takes a preference list (most preferred first) and returns a
+// ChoiceFunc. It's a panic, if the given preference list is empty.
 func ListChooser(preferences []string) ChoiceFunc {
 	if len(preferences) == 0 {
 		panic("preferences cannot be empty")
