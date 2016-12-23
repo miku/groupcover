@@ -67,7 +67,7 @@ func ListChooser(preferences []string) ChoiceFunc {
 		panic("preferences cannot be empty")
 	}
 	f := func(s []string) string {
-		if len(s) == 0 {
+		if len(s) < 2 {
 			return preferences[0]
 		}
 
