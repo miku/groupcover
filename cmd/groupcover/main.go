@@ -102,9 +102,16 @@ func main() {
 	// Use the third column as grouping criteria.
 	thirdColumn := groupcover.Column(2)
 
+	// Parse preferences.
 	if *prefs != "" {
-		groupcover.DefaultChoiceFunc = groupcover.ListChooser(strings.Fields(*prefs))
+		fields := strings.Fields(*prefs)
+		if len(fields) == 0 {
+			log.Fatal("preference must not be empty")
+		}
+		// It would be better to not rely on package vars, but ok for now.
+		groupcover.DefaultChoiceFunc = groupcover.ListChooser(fields)
 	}
+
 	// A simple rewriter, that considers per-key preferences. First, test with
 	// the same default for all keys (groupcover.DefaultChoiceFunc).
 	rewriter := groupcover.SimpleRewriter(groupcover.PreferenceMap{})
