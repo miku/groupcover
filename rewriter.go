@@ -34,8 +34,8 @@ import (
 var (
 	// Verbose or not.
 	Verbose = true
-	// Default ChoiceFunc, if preferences have no default defined.
-	DefaultChoiceFunc = LexChoice
+	// defaultChoiceFunc, if preferences have no default defined.
+	defaultChoiceFunc = LexChoice
 )
 
 // ChoiceFunc presented with a list of choices, chooses one.
@@ -216,7 +216,7 @@ func SimpleRewriter(preferences Preferences) RewriterFunc {
 				if preferences.Default != nil {
 					preferences.Map[key] = preferences.Default
 				} else {
-					preferences.Map[key] = DefaultChoiceFunc
+					preferences.Map[key] = defaultChoiceFunc
 				}
 
 			}
