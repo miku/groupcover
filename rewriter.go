@@ -100,10 +100,10 @@ func ListChooser(prefs []string) ChoiceFunc {
 			}
 		}
 
-		// If there is no intersection between preferences and options, return
-		// the first option (somewhat randomly).
+		// If there is no intersection between preferences and options,
+		// fallback to LexChoice (somewhat randomly).
 		if intersectionEmpty {
-			return s[0]
+			return LexChoice(s)
 		}
 
 		// Otherwise return the most preferred option.

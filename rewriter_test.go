@@ -31,9 +31,9 @@ func TestListChooser(t *testing.T) {
 			preferences: []string{"A"},
 			choices: []choice{
 				{given: []string{"A"}, result: "A"},
-				{given: []string{"B", "C"}, result: "B"},
+				{given: []string{"B", "C"}, result: "C"},
 				{given: []string{"D", "C"}, result: "D"},
-				{given: []string{"C", "D"}, result: "C"},
+				{given: []string{"C", "D"}, result: "D"},
 				{given: []string{"A", "B", "A"}, result: "A"},
 				{given: []string{}, result: ""},
 				{given: []string{"X"}, result: "X"},
