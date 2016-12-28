@@ -231,12 +231,8 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 	return f
 }
 
-// LastRow rewriter that only keeps the last row, similar to uniq(1).
-//
-// if err := GroupRewrite(os.Stdin, os.Stdout, Column(0), LastRow); err != nil {
-//     log.Fatal(err)
-// }
-//
+// LastRow rewriter that only keeps the last row, similar to uniq(1):
+// GroupRewrite(os.Stdin, os.Stdout, Column(0), LastRow)
 func LastRow(records [][]string) ([][]string, error) {
 	if len(records) == 0 {
 		return nil, nil
