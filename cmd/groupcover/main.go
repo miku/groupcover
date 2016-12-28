@@ -35,34 +35,6 @@ import (
 const Version = "0.0.5"
 
 func main() {
-	// Preference per key.
-
-	// preferences := groupcover.PreferenceMap{
-	// 	"K1": groupcover.LexChoice,
-	// 	"K2": groupcover.LexChoice,
-	// 	"K3": groupcover.LexChoice,
-	// }
-
-	// preferences := groupcover.PreferenceMap{
-	// 	"DE-105":    groupcover.LexChoice,
-	// 	"DE-14":     groupcover.LexChoice,
-	// 	"DE-15":     groupcover.LexChoice,
-	// 	"DE-15-FID": groupcover.LexChoice,
-	// 	"DE-1972":   groupcover.LexChoice,
-	// 	"DE-540":    groupcover.LexChoice,
-	// 	"DE-Bn3":    groupcover.LexChoice,
-	// 	"DE-Brt1":   groupcover.LexChoice,
-	// 	"DE-Ch1":    groupcover.LexChoice,
-	// 	"DE-D13":    groupcover.LexChoice,
-	// 	"DE-D161":   groupcover.LexChoice,
-	// 	"DE-Gla1":   groupcover.LexChoice,
-	// 	"DE-Kn38":   groupcover.LexChoice,
-	// 	"DE-L152":   groupcover.LexChoice,
-	// 	"DE-L242":   groupcover.LexChoice,
-	// 	"DE-Zi4":    groupcover.LexChoice,
-	// 	"DE-Zwi2":   groupcover.LexChoice,
-	// }
-
 	// TODO(miku): Adjust for AMSL format.
 	// curl -s http://example.com/outboundservices/list?do=deduplication
 	// [
