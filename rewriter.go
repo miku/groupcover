@@ -87,9 +87,14 @@ func ListChooser(prefs []string) ChoiceFunc {
 		}
 		// Take note of position of each element in preferences.
 		positions := make([]int, len(s))
+
+		// Remember, if intersection between preferences and options is empty.
+		intersectionEmpty := true
+
 		for i, c := range s {
 			for j, p := range prefs {
 				if c == p {
+					intersectionEmpty = false
 					positions[i] = j
 				}
 			}
