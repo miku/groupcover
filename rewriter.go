@@ -67,10 +67,14 @@ func ListChooser(preferences []string) ChoiceFunc {
 		panic("preferences cannot be empty")
 	}
 	f := func(s []string) string {
-		if len(s) < 2 {
-			return preferences[0]
+		// Nothing to choose from, return an empty string.
+		if len(s) == 0 {
+			return ""
 		}
-
+		// If we have no entry in preferences, just return the value.
+		if len(s) < 2 {
+			return s[0]
+		}
 		// Take note of position of each element in preferences.
 		positions := make([]int, len(s))
 		for i, c := range s {
@@ -238,4 +242,9 @@ func LastRow(records [][]string) ([][]string, error) {
 		return nil, nil
 	}
 	return [][]string{records[len(records)-1]}, nil
+}
+
+// Discard all rows.
+func DiscardRows(records [][]string) ([][]string, error) {
+	return nil, nil
 }
