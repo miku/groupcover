@@ -3,6 +3,9 @@ package groupcover
 import (
 	"io/ioutil"
 	"os"
+	"reflect"
+	"runtime"
+	"strings"
 	"testing"
 )
 
@@ -74,6 +77,31 @@ func TestLexChoice(t *testing.T) {
 			if r != ch.result {
 				t.Errorf("with LexChoice, given %v, got %v, want %v", ch.given, r, ch.result)
 			}
+		}
+	}
+}
+
+func TestPreferencesWithDefaults(t *testing.T) {
+	// Test default default.
+	var cases = []struct {
+		prefs    Preferences
+		fragment string
+	}{
+		{
+			prefs:    Preferences{},
+			fragment: "groupcover.LexChoice",
+		},
+		{
+			prefs:    Preferences{Default: ListChooser([]string{"X"})},
+			fragment: "groupcover.ListChooser",
+		},
+	}
+
+	for _, c := range cases {
+		f := c.prefs.withDefaults("<MISS>")
+		name := runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
+		if !strings.Contains(name, c.fragment) {
+			t.Errorf("got %s, want something with %s", name, c.fragment)
 		}
 	}
 }

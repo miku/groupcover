@@ -48,6 +48,22 @@ type Preferences struct {
 	Default ChoiceFunc
 }
 
+// withDefaults returns the value for a given key, falling back to various
+// defaults, if key is not in the map yet.
+func (p *Preferences) withDefaults(key string) ChoiceFunc {
+	if p.Map == nil {
+		p.Map = make(map[string]ChoiceFunc)
+	}
+	if _, ok := p.Map[key]; !ok {
+		if p.Default != nil {
+			p.Map[key] = p.Default
+		} else {
+			p.Map[key] = defaultChoiceFunc
+		}
+	}
+	return p.Map[key]
+}
+
 // AttrFunc extracts an attribute value from a CSV record. Example values
 // could be a single column, part of a column or a value spanning multiple
 // columns.
@@ -209,18 +225,7 @@ func SimpleRewriter(preferences Preferences) RewriterFunc {
 		// For each key determine the preferred group.
 		preferred := make(map[string]string)
 		for key, groups := range groupsPerKey {
-			if preferences.Map == nil {
-				preferences.Map = make(map[string]ChoiceFunc)
-			}
-			if _, ok := preferences.Map[key]; !ok {
-				if preferences.Default != nil {
-					preferences.Map[key] = preferences.Default
-				} else {
-					preferences.Map[key] = defaultChoiceFunc
-				}
-
-			}
-			f := preferences.Map[key]
+			f := preferences.withDefaults(key)
 			preferred[key] = f(groups)
 		}
 
