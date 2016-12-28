@@ -32,7 +32,7 @@ import (
 	"github.com/miku/groupcover"
 )
 
-const Version = "0.0.5"
+const Version = "0.0.6"
 
 func main() {
 	// TODO(miku): Adjust for AMSL format.
