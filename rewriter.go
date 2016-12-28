@@ -66,9 +66,13 @@ func LexChoice(s []string) string {
 }
 
 // ListChooser takes a preference list (most preferred first) and returns a
-// ChoiceFunc. It's a panic, if the given preference list is empty.
-func ListChooser(preferences []string) ChoiceFunc {
-	if len(preferences) == 0 {
+// ChoiceFunc. It's a panic, if the given preference list is empty. Basic
+// semantics. If a set of options is given and preferences and options
+// intersect, then the option with the highest preference is choosen. If there
+// is no preference defined for an option, we randomly select an option (not a
+// preference).
+func ListChooser(prefs []string) ChoiceFunc {
+	if len(prefs) == 0 {
 		panic("preferences cannot be empty")
 	}
 	f := func(s []string) string {
@@ -76,28 +80,35 @@ func ListChooser(preferences []string) ChoiceFunc {
 		if len(s) == 0 {
 			return ""
 		}
-		// If we have no entry in preferences, just return the value.
-		if len(s) < 2 {
+		// If we have only a single option, just return the given value. It
+		// will match or not, there is no choice.
+		if len(s) == 1 {
 			return s[0]
 		}
 		// Take note of position of each element in preferences.
 		positions := make([]int, len(s))
 		for i, c := range s {
-			for j, p := range preferences {
+			for j, p := range prefs {
 				if c == p {
 					positions[i] = j
 				}
 			}
 		}
 
+		// If there is no intersection between preferences and options, return
+		// the first option (somewhat randomly).
+		if intersectionEmpty {
+			return s[0]
+		}
+
+		// Otherwise return the most preferred option.
 		sort.Ints(positions)
-		return preferences[positions[0]]
+		return prefs[positions[0]]
 	}
 	return f
 }
 
-// Column returns an AttrFunc, that extracts the value at a given column,
-// zero-based.
+// Column returns an AttrFunc. Yields the value of a given column (0-indexed).
 func Column(k int) AttrFunc {
 	f := func(record []string) (string, error) {
 		if k >= len(record) {
