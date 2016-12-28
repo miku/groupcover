@@ -32,16 +32,21 @@ import (
 )
 
 var (
-	// DefaultChoiceFunc to use, when there is not entry in preferences.
-	DefaultChoiceFunc ChoiceFunc = LexChoice
-	Verbose                      = true
+	// Verbose or not.
+	Verbose = true
+	// Default ChoiceFunc, if preferences have no default defined.
+	DefaultChoiceFunc = LexChoice
 )
 
 // ChoiceFunc presented with a list of choices, chooses one.
 type ChoiceFunc func([]string) string
 
-// PreferenceMap groups many choices by key.
-type PreferenceMap map[string]ChoiceFunc
+// Preferences groups many choices by key. If there is no ChoiceFunc for a
+// key, a default can be used.
+type Preferences struct {
+	Map     map[string]ChoiceFunc
+	Default ChoiceFunc
+}
 
 // AttrFunc extracts an attribute value from a CSV record. Example values
 // could be a single column, part of a column or a value spanning multiple
@@ -158,7 +163,7 @@ func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc Rewr
 // group) and returns a rewriter, which drops certain keys that are assigned
 // to records from multiple groups with the same attribute value. This
 // rewriter returns only differing records.
-func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
+func SimpleRewriter(preferences Preferences) RewriterFunc {
 	f := func(records [][]string) ([][]string, error) {
 		// A single entry does not need any deduplication.
 		if len(records) < 2 {
@@ -188,10 +193,18 @@ func SimpleRewriter(preferences PreferenceMap) RewriterFunc {
 		// For each key determine the preferred group.
 		preferred := make(map[string]string)
 		for key, groups := range groupsPerKey {
-			if _, ok := preferences[key]; !ok {
-				preferences[key] = DefaultChoiceFunc
+			if preferences.Map == nil {
+				preferences.Map = make(map[string]ChoiceFunc)
 			}
-			f := preferences[key]
+			if _, ok := preferences.Map[key]; !ok {
+				if preferences.Default != nil {
+					preferences.Map[key] = preferences.Default
+				} else {
+					preferences.Map[key] = DefaultChoiceFunc
+				}
+
+			}
+			f := preferences.Map[key]
 			preferred[key] = f(groups)
 		}
 
