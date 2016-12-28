@@ -50,6 +50,20 @@ $ groupcover < fixtures/sample.csv 2> /dev/null
 id-1,group-1,value-1,Leipzig
 ```
 
+Since 0.0.4, there is an experimental flag for settings preferences:
+
+```
+$ groupcover -prefs 'group-2 group-1' < fixtures/sample.csv 2> /dev/null
+id-1,group-1,value-1,Leipzig
+```
+
+Overwrite default lexicographic order, prefer group-1 over group-2.
+
+```
+$ groupcover -prefs 'group-1 group-2' < fixtures/sample.csv 2> /dev/null
+id-2,group-2,value-1,Dresden
+```
+
 Another example.
 
 ```shell
