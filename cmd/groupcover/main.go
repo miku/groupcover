@@ -71,7 +71,7 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 
-	if *column < 0 {
+	if *column < 1 {
 		log.Fatal("column index must be non-negative")
 	}
 
