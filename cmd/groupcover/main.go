@@ -32,6 +32,7 @@ import (
 	"github.com/miku/groupcover"
 )
 
+// Version displayed by application.
 const Version = "0.0.8"
 
 func main() {
