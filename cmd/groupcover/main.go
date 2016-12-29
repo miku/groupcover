@@ -53,6 +53,7 @@ func main() {
 	cpuprofile := flag.String("cpuprofile", "", "path to pprof output")
 	verbose := flag.Bool("verbose", false, "more output")
 	version := flag.Bool("version", false, "show version")
+	column := flag.Int("f", 3, "column to use for grouping, one-based")
 
 	flag.Parse()
 
@@ -70,19 +71,20 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 
+	if *column < 0 {
+		log.Fatal("column index must be non-negative")
+	}
+
 	groupcover.Verbose = *verbose
 
-	// Use the third column as grouping criteria.
-	thirdColumn := groupcover.Column(2)
-
-	// Preferences, no keys, using LexChoice as default.
-	preferences := groupcover.Preferences{Default: groupcover.LexChoice}
+	attrFunc := groupcover.Column(*column - 1)
+	preferences := groupcover.Preferences{}
 
 	// Parse preferences, if given.
 	if *prefs != "" {
 		fields := strings.Fields(*prefs)
 		if len(fields) == 0 {
-			log.Fatal("preference must not be empty")
+			log.Fatal("prefs must not be empty")
 		}
 		// Adjust the default ChoiceFunc.
 		preferences.Default = groupcover.ListChooser(fields)
@@ -93,7 +95,7 @@ func main() {
 
 	// Read from stdin, write to stdout, use third column as grouping criteria
 	// and rewriter as rewriter.
-	if err := groupcover.GroupRewrite(os.Stdin, os.Stdout, thirdColumn, rewriter); err != nil {
+	if err := groupcover.GroupRewrite(os.Stdin, os.Stdout, attrFunc, rewriter); err != nil {
 		log.Fatal(err)
 	}
 }
