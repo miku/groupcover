@@ -83,7 +83,7 @@ A,G2,A4,K2,K3
 To sort CSV by attribute:
 
 ```shell
-sort -t, -k3 fixtures/mini.csv
+$ sort -t, -k3 fixtures/mini.csv
 ```
 
 Only the changed entries are written:
