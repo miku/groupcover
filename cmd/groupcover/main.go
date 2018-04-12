@@ -34,7 +34,7 @@ import (
 )
 
 // Version displayed by application.
-const Version = "0.0.8"
+const Version = "0.0.9"
 
 func main() {
 	// TODO(miku): Adjust for AMSL format.
