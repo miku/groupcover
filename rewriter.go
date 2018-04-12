@@ -22,6 +22,7 @@
 package groupcover
 
 import (
+	"bytes"
 	"encoding/csv"
 	"fmt"
 	"io"
@@ -37,6 +38,25 @@ var (
 	// defaultChoiceFunc, if preferences have no default defined.
 	defaultChoiceFunc = LexChoice
 )
+
+// LowerReader lowercases everything it reads.
+type LowerReader struct {
+	r io.Reader
+}
+
+func NewLowerReader(r io.Reader) *LowerReader {
+	return &LowerReader{r: r}
+}
+
+func (r *LowerReader) Read(p []byte) (int, error) {
+	n, err := r.r.Read(p)
+	if err != nil {
+		return n, err
+	}
+	b := bytes.ToLower(p)
+	copy(p, b)
+	return n, nil
+}
 
 // ChoiceFunc presented with a list of choices, chooses one.
 type ChoiceFunc func([]string) string

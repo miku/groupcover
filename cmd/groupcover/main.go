@@ -24,6 +24,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"runtime/pprof"
@@ -54,6 +55,7 @@ func main() {
 	verbose := flag.Bool("verbose", false, "more output")
 	version := flag.Bool("version", false, "show version")
 	column := flag.Int("f", 3, "column to use for grouping, one-based")
+	lowerCase := flag.Bool("lower", false, "lowercase input")
 
 	flag.Parse()
 
@@ -93,9 +95,14 @@ func main() {
 	// A simple rewriter, that considers per-key preferences.
 	rewriter := groupcover.SimpleRewriter(preferences)
 
+	var reader io.Reader = os.Stdin
+	if *lowerCase {
+		reader = groupcover.NewLowerReader(os.Stdin)
+	}
+
 	// Read from stdin, write to stdout, use third column as grouping criteria
 	// and rewriter as rewriter.
-	if err := groupcover.GroupRewrite(os.Stdin, os.Stdout, attrFunc, rewriter); err != nil {
+	if err := groupcover.GroupRewrite(reader, os.Stdout, attrFunc, rewriter); err != nil {
 		log.Fatal(err)
 	}
 }
