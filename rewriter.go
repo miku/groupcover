@@ -160,6 +160,18 @@ func Column(k int) AttrFunc {
 	return f
 }
 
+// ColumnLower returns an AttrFunc. Yields the lowercase value of a given column
+// (0-indexed).
+func ColumnLower(k int) AttrFunc {
+	f := func(record []string) (string, error) {
+		if k >= len(record) {
+			return "", fmt.Errorf("invalid column: got %d, record has only %d", k, len(record))
+		}
+		return strings.ToLower(strings.TrimSpace(record[k])), nil
+	}
+	return f
+}
+
 // GroupRewrite reads CSV records from a given reader, extracts attribute
 // values with attrFunc, groups subsequent records with the same attribute
 // value and passes these groups to a rewriter. The altered records are
