@@ -16,6 +16,8 @@ clean:
 deb: $(TARGETS)
 	mkdir -p packaging/deb/$(PKGNAME)/usr/sbin
 	cp $(TARGETS) packaging/deb/$(PKGNAME)/usr/sbin
+	mkdir -p packaging/deb/$(PKGNAME)/usr/local/share/man/man1
+	cp docs/$(PKGNAME).1 packaging/deb/$(PKGNAME)/usr/local/share/man/man1
 	cd packaging/deb && fakeroot dpkg-deb --build $(PKGNAME) .
 	mv packaging/deb/$(PKGNAME)_*.deb .
 

@@ -1,0 +1,67 @@
+.TH GROUPCOVER 1 "JANUAR 2017" "Leipzig University Library" "Manuals"
+.SH NAME
+.PP
+groupcover \- identifier\-based deduplication with groups.
+.SH SYNOPSIS
+.PP
+\fB\fCgroupcover\fR [\fB\fC\-prefs\fR \fIpreferences\fP] < \fIfile\fP
+.SH DESCRIPTION
+.PP
+Deduplication on identifiers is simple, however it can be a more tedious, when
+there are different key (e.g. ISIL) attached to an identifier, and the keys
+need to be considered for a set of duplicates, with potentiall different
+preferences per key.
+.PP
+The groupcover tool tries to by lazy in different ways:
+.RS
+.IP \(bu 2
+Work on data, that only contains the necessary fields: identifier, group
+(e.g. source\-id), value (e.g. DOI) and keys (e.g. ISIL).
+.IP \(bu 2
+Input data needs to be sorted by value (e.g. DOI) \- similar to 
+.BR uniq (1).
+.IP \(bu 2
+Output only the rows, that contain changes.
+.RE
+.PP
+With these simplifications, deduplication becomes a fast operation, taking
+about 10min for a file with 150M rows and around 6M changes.
+.PP
+The more time\-consuming part will be the preparation of the input CSV
+(\[la]https://git.io/vprui\[ra]) and the application of the changes
+(\[la]https://git.io/vpru1\[ra]).
+.SH OPTIONS
+.TP
+\fB\fC\-cpuprofile\fR \fIfilename\fP
+Write cpu profile to given filename.
+.TP
+\fB\fC\-f\fR \fIN\fP
+Column number to use for grouping. One\-based, defaults to column 3. 
+.TP
+\fB\fC\-lower\fR
+Lowercase the input for case\-insensitive values.
+.TP
+\fB\fC\-prefs\fR \fIstring\fP
+A space separated list of strings, each string names a group (e.g. a source id).
+.TP
+\fB\fC\-version\fR
+Program version.
+.TP
+\fB\fC\-verbose\fR
+Show progress.
+.SH EXAMPLES
+.PP
+As of early 2018, for AI (finc.info) the deduplication is realized with the following command:
+.IP
+\fB\fCgroupcover \-lower \-prefs '85 55 89 60 50 105 34 101 53 49 28 48 121' < a > b\fR
+.PP
+Where \fIa\fP and \fIb\fP are CSV files: \fB\fCid,source_id,doi,isil,isil,isil,...\fR \- with doi and isil being optional.
+.SH BUGS
+.PP
+Please report bugs to \[la]https://github.com/miku/groupcover/issues\[ra]\&.
+.SH AUTHORS
+.PP
+Martin Czygan \[la]https://github.com/miku\[ra], \[la]martin.czygan@uni-leipzig.de\[ra]
+.SH SEE ALSO
+.PP
+FINC \[la]https://finc.info\[ra], AMSL \[la]http://amsl.technology/\[ra]

@@ -1,6 +1,6 @@
 Summary:    Group deduplication.
 Name:       groupcover
-Version:    0.0.10
+Version:    0.0.11
 Release:    0
 License:    GPL
 BuildArch:  x86_64
@@ -23,6 +23,9 @@ Group deduplication.
 mkdir -p $RPM_BUILD_ROOT/usr/local/sbin
 install -m 755 groupcover $RPM_BUILD_ROOT/usr/local/sbin
 
+mkdir -p $RPM_BUILD_ROOT/usr/local/share/man/man1
+install -m 644 span.1 $RPM_BUILD_ROOT/usr/local/share/man/man1/groupcover.1
+
 %post
 
 %clean
@@ -34,6 +37,7 @@ rm -rf %{_topdir}/BUILD/%{name}
 %defattr(-,root,root)
 
 /usr/local/sbin/groupcover
+/usr/local/share/man/man1/groupcover.1
 
 %changelog
 * Sat Dec 21 2016 Martin Czygan
