@@ -9,11 +9,14 @@ import (
 	"testing"
 )
 
+// choice helper for tests.
 type choice struct {
 	given  []string
 	result string
 }
 
+// TestListChooser tests a selection from a list of elements given preferences
+// (most preferred first).
 func TestListChooser(t *testing.T) {
 	var cases = []struct {
 		preferences []string
@@ -49,12 +52,14 @@ func TestListChooser(t *testing.T) {
 		for _, ch := range c.choices {
 			r := choiceFunc(ch.given)
 			if r != ch.result {
-				t.Errorf("with prefs %v, given %v, got %v, want %v", c.preferences, ch.given, r, ch.result)
+				t.Errorf("with prefs %v, given %v, got %v, want %v",
+					c.preferences, ch.given, r, ch.result)
 			}
 		}
 	}
 }
 
+// TestLexChoice tests lexical choice selection.
 func TestLexChoice(t *testing.T) {
 	var cases = []struct {
 		choices []choice
@@ -81,17 +86,22 @@ func TestLexChoice(t *testing.T) {
 	}
 }
 
+// TestPreferencesWithDefaults checks, whether withDefaults returns a given
+// type (using reflection).
 func TestPreferencesWithDefaults(t *testing.T) {
 	// Test default default.
 	var cases = []struct {
+		about    string
 		prefs    Preferences
 		fragment string
 	}{
 		{
+			about:    "test for a default",
 			prefs:    Preferences{},
 			fragment: "groupcover.LexChoice",
 		},
 		{
+			about:    "test for custom default fallback",
 			prefs:    Preferences{Default: ListChooser([]string{"X"})},
 			fragment: "groupcover.ListChooser",
 		},
@@ -112,7 +122,8 @@ func BenchmarkSimpleRewriter(b *testing.B) {
 		b.Errorf(err.Error())
 	}
 	for i := 0; i < b.N; i++ {
-		if err := GroupRewrite(file, ioutil.Discard, Column(2), SimpleRewriter(Preferences{Default: LexChoice})); err != nil {
+		rewriter := SimpleRewriter(Preferences{Default: LexChoice})
+		if err := GroupRewrite(file, ioutil.Discard, Column(2), rewriter); err != nil {
 			b.Errorf(err.Error())
 		}
 	}

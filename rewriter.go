@@ -72,7 +72,8 @@ type AttrFunc func(record []string) (string, error)
 // RewriterFunc rewrites a list of records.
 type RewriterFunc func(records [][]string) ([][]string, error)
 
-// LexChoice chooses the key with the highest lexicographic value.
+// LexChoice chooses the key with the highest lexicographic value. If there are
+// no choices, return the empty string.
 func LexChoice(s []string) string {
 	if len(s) == 0 {
 		return ""
@@ -129,7 +130,7 @@ func ListChooser(prefs []string) ChoiceFunc {
 	return f
 }
 
-// Column returns an AttrFunc. Yields the value of a given column (0-indexed).
+// Column returns an AttrFunc. Yields the value of a given column (zero-indexed).
 func Column(k int) AttrFunc {
 	f := func(record []string) (string, error) {
 		if k >= len(record) {
@@ -141,7 +142,7 @@ func Column(k int) AttrFunc {
 }
 
 // ColumnLower returns an AttrFunc. Yields the lowercase value of a given column
-// (0-indexed).
+// (zero-indexed).
 func ColumnLower(k int) AttrFunc {
 	f := func(record []string) (string, error) {
 		if k >= len(record) {
