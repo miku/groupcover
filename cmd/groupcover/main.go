@@ -33,7 +33,7 @@ import (
 )
 
 // Version displayed by application.
-const Version = "0.0.11"
+const Version = "0.0.12"
 
 var (
 	prefs      = flag.String("prefs", "", "space separated string of preferences (most preferred first), e.g. 'B A C'")
