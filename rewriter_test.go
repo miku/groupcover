@@ -157,7 +157,7 @@ func TestLowerCaseDeduplication(t *testing.T) {
 ai-49-aHR0cDovL2R4LmRvaS5vcmcvMTAuMzQxNC9tZTEzLTAxLTAxMzQ,49,https://doi.org/10.3414/me13-01-0134,DE-15,DE-14`),
 			attrFunc: ColumnLower(3),
 			rewriter: SimpleRewriter(Preferences{}),
-			want:     "ai-49-aHR0cDovL2R4LmRvaS5vcmcvMTAuMzQxNC9tZTEzLTAxLTAxMzQ,49,https://doi.org/10.3414/me13-01-0134",
+			want:     "ai-49-aHR0cDovL2R4LmRvaS5vcmcvMTAuMzQxNC9tZTEzLTAxLTAxMzQ,49,https://doi.org/10.3414/me13-01-0134\n",
 			err:      nil,
 		},
 	}
