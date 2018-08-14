@@ -1,6 +1,8 @@
 package groupcover
 
 import (
+	"bytes"
+	"io"
 	"io/ioutil"
 	"os"
 	"reflect"
@@ -112,6 +114,62 @@ func TestPreferencesWithDefaults(t *testing.T) {
 		name := runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
 		if !strings.Contains(name, c.fragment) {
 			t.Errorf("got %s, want something with %s", name, c.fragment)
+		}
+	}
+}
+
+func TestLowerCaseDeduplication(t *testing.T) {
+	var cases = []struct {
+		about    string
+		reader   io.Reader
+		attrFunc AttrFunc
+		rewriter RewriterFunc
+		want     string
+		err      error
+	}{
+		{
+			about:    "a basic deduplication example, two records, d0 is dropped from entry",
+			reader:   strings.NewReader("i0,s0,v0,d0,d1\ni1,s1,v0,d0\n"),
+			attrFunc: ColumnLower(3),
+			rewriter: SimpleRewriter(Preferences{}),
+			want:     "i0,s0,v0,d1\n",
+			err:      nil,
+		},
+		{
+			about:    "by default we are case-sensitive",
+			reader:   strings.NewReader("i0,s0,v0,d0,d1\ni1,s1,V0,d0\n"),
+			attrFunc: Column(0),
+			rewriter: SimpleRewriter(Preferences{}),
+			want:     "",
+			err:      nil,
+		},
+		{
+			about:    "case insensitive, so d0 is dropped from first entry",
+			reader:   strings.NewReader("i0,s0,v0,d0,d1\ni1,s1,V0,d0\n"),
+			attrFunc: ColumnLower(3),
+			rewriter: SimpleRewriter(Preferences{}),
+			want:     "i0,s0,v0,d1\n",
+			err:      nil,
+		},
+		{
+			about: "case from #12755",
+			reader: strings.NewReader(`ai-60-MTAuMzQxNC9NRTEzLTAxLTAxMzQ,60,https://doi.org/10.3414/ME13-01-0134,DE-15,DE-14
+ai-49-aHR0cDovL2R4LmRvaS5vcmcvMTAuMzQxNC9tZTEzLTAxLTAxMzQ,49,https://doi.org/10.3414/me13-01-0134,DE-15,DE-14`),
+			attrFunc: ColumnLower(3),
+			rewriter: SimpleRewriter(Preferences{}),
+			want:     "ai-49-aHR0cDovL2R4LmRvaS5vcmcvMTAuMzQxNC9tZTEzLTAxLTAxMzQ,49,https://doi.org/10.3414/me13-01-0134",
+			err:      nil,
+		},
+	}
+
+	for _, c := range cases {
+		var buf bytes.Buffer
+		err := GroupRewrite(c.reader, &buf, c.attrFunc, c.rewriter)
+		if err != c.err {
+			t.Errorf("GroupRewrite (%s): got %v, want %v", c.about, err, c.err)
+		}
+		if buf.String() != c.want {
+			t.Errorf("GroupRewrite (%s): got %v, want %v", c.about, buf.String(), c.want)
 		}
 	}
 }
