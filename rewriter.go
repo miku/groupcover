@@ -32,7 +32,7 @@ import (
 )
 
 var (
-	// Verbose or not.
+	// Verbose output.
 	Verbose = true
 	// defaultChoiceFunc, if preferences have no default defined.
 	defaultChoiceFunc = LexChoice
@@ -41,8 +41,8 @@ var (
 // ChoiceFunc presented with a list of choices, chooses one.
 type ChoiceFunc func([]string) string
 
-// Preferences groups many choices by key. If there is no ChoiceFunc for a
-// key, a default can be used.
+// Preferences groups many choices by key (e.g. ISIL). If there is no
+// ChoiceFunc for a key, a default can be used.
 type Preferences struct {
 	Map     map[string]ChoiceFunc
 	Default ChoiceFunc
@@ -64,9 +64,9 @@ func (p *Preferences) withDefaults(key string) ChoiceFunc {
 	return p.Map[key]
 }
 
-// AttrFunc extracts an attribute value from a CSV record. Example values
-// could be a single column, part of a column or a value spanning multiple
-// columns.
+// AttrFunc extracts an attribute value from a slice of strings (e.g. coming
+// from a CSV file). Example values could be a single column, part of a column
+// or a value spanning multiple columns.
 type AttrFunc func(record []string) (string, error)
 
 // RewriterFunc rewrites a list of records.
@@ -83,11 +83,10 @@ func LexChoice(s []string) string {
 }
 
 // ListChooser takes a preference list (most preferred first) and returns a
-// ChoiceFunc. It's a panic, if the given preference list is empty. Basic
-// semantics. If a set of options is given and preferences and options
-// intersect, then the option with the highest preference is choosen. If there
-// is no preference defined for an option, we randomly select an option (not a
-// preference).
+// ChoiceFunc. It's a panic, if the given preference list is empty. If a set of
+// options is given and preferences and options intersect, then the option with
+// the highest preference is choosen. If preferences and options do not
+// intersect, we randomly select an option.
 func ListChooser(prefs []string) ChoiceFunc {
 	if len(prefs) == 0 {
 		panic("preferences cannot be empty")
@@ -142,7 +141,7 @@ func Column(k int) AttrFunc {
 }
 
 // ColumnLower returns an AttrFunc. Yields the lowercase value of a given column
-// (zero-indexed).
+// (zero-indexed), refs #12755.
 func ColumnLower(k int) AttrFunc {
 	f := func(record []string) (string, error) {
 		if k >= len(record) {
@@ -155,11 +154,12 @@ func ColumnLower(k int) AttrFunc {
 
 // GroupRewrite reads CSV records from a given reader, extracts attribute
 // values with attrFunc, groups subsequent records with the same attribute
-// value and passes these groups to a rewriter. The altered records are
-// written as CSV to the given writer.
+// value and passes these groups to a rewriter. The potentially modified
+// records are written as CSV to the given writer.
 func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc RewriterFunc) error {
 	cw := csv.NewWriter(w)
 	cr := csv.NewReader(r)
+
 	// If FieldsPerRecord is negative, no check is made and records may have a
 	// variable number of fields.
 	cr.FieldsPerRecord = -1
@@ -205,8 +205,8 @@ func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc Rewr
 }
 
 // SimpleRewriter takes a preference map (which key is interested in which
-// group) and returns a rewriter, which drops certain keys that are assigned
-// to records from multiple groups with the same attribute value. This
+// group) and returns a rewriter, which drops certain keys that are assigned to
+// records from multiple groups with the same attribute value. Note: This
 // rewriter returns only differing records.
 func SimpleRewriter(preferences Preferences) RewriterFunc {
 	f := func(records [][]string) ([][]string, error) {
@@ -215,7 +215,7 @@ func SimpleRewriter(preferences Preferences) RewriterFunc {
 			return nil, nil
 		}
 
-		// Only keep comparable records.
+		// Only keep comparable records (row with at least four columns).
 		var valid [][]string
 
 		for _, record := range records {
@@ -235,7 +235,7 @@ func SimpleRewriter(preferences Preferences) RewriterFunc {
 			}
 		}
 
-		// For each key determine the preferred group.
+		// For each key (isil) determine the preferred group (source identifier).
 		preferred := make(map[string]string)
 		for key, groups := range groupsPerKey {
 			f := preferences.withDefaults(key)
@@ -278,8 +278,8 @@ func SimpleRewriter(preferences Preferences) RewriterFunc {
 	return f
 }
 
-// LastRow rewriter that only keeps the last row, similar to uniq(1):
-// GroupRewrite(os.Stdin, os.Stdout, Column(0), LastRow)
+// LastRow rewriter that only keeps the last row, similar to uniq(1), which
+// would be similar to GroupRewrite(os.Stdin, os.Stdout, Column(0), LastRow).
 func LastRow(records [][]string) ([][]string, error) {
 	if len(records) == 0 {
 		return nil, nil

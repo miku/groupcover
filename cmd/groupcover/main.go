@@ -35,27 +35,16 @@ import (
 // Version displayed by application.
 const Version = "0.0.11"
 
+var (
+	prefs      = flag.String("prefs", "", "space separated string of preferences (most preferred first), e.g. 'B A C'")
+	cpuprofile = flag.String("cpuprofile", "", "pprof output file")
+	verbose    = flag.Bool("verbose", false, "more output")
+	version    = flag.Bool("version", false, "show version")
+	column     = flag.Int("f", 3, "column to use for grouping, one-based")
+	lowerCase  = flag.Bool("lower", false, "lowercase input")
+)
+
 func main() {
-	// TODO(miku): Adjust for AMSL format.
-	// curl -s http://example.com/outboundservices/list?do=deduplication
-	// [
-	//   {
-	//     "sourceID": "3",
-	//     "sourceID_dedup": "0;108;120;16;17;18;19;26;4;59;63;72;74;84;86"
-	//   },
-	//   {
-	//     "sourceID": "4",
-	//     "sourceID_dedup": "0;108;120;16;17;18;19;26;63;72;74;84;86"
-	//   },
-	//   ...
-
-	prefs := flag.String("prefs", "", "space separated string of preferences (most preferred first), e.g. 'B A C'")
-	cpuprofile := flag.String("cpuprofile", "", "path to pprof output")
-	verbose := flag.Bool("verbose", false, "more output")
-	version := flag.Bool("version", false, "show version")
-	column := flag.Int("f", 3, "column to use for grouping, one-based")
-	lowerCase := flag.Bool("lower", false, "lowercase input")
-
 	flag.Parse()
 
 	if *version {
@@ -73,16 +62,16 @@ func main() {
 	}
 
 	if *column < 1 {
-		log.Fatal("column index must be non-negative")
+		log.Fatal("column index must be positive")
 	}
 
 	groupcover.Verbose = *verbose
 
 	var attrFunc groupcover.AttrFunc
-
-	if *lowerCase {
+	switch *lowerCase {
+	case true:
 		attrFunc = groupcover.ColumnLower(*column - 1)
-	} else {
+	default:
 		attrFunc = groupcover.Column(*column - 1)
 	}
 
