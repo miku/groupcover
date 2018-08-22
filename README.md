@@ -31,6 +31,23 @@ a number of keys may be dropped for an entry.
 
 The CSV file *must* already *be sorted by attribute*.
 
+```shell
+$ groupcover -h
+Usage of groupcover:
+  -cpuprofile string
+        pprof output file
+  -f int
+        column to use for grouping, one-based (default 3)
+  -lower
+        lowercase input
+  -prefs string
+        space separated string of preferences (most preferred first), e.g. 'B A C'
+  -verbose
+        more output
+  -version
+        show version
+```
+
 Examples
 --------
 
