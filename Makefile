@@ -1,6 +1,6 @@
 SHELL = /bin/bash
 
-TARGETS = groupcover
+TARGETS = groupcover groupindex
 PKGNAME = groupcover
 
 all: $(TARGETS)
