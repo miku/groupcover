@@ -44,11 +44,11 @@ func main() {
 	// the same doi.
 	for {
 		b, err := br.ReadBytes('\n')
-		if err != nil {
-			log.Fatal(err)
-		}
 		if err == io.EOF {
 			break
+		}
+		if err != nil {
+			log.Fatal(err)
 		}
 		if len(b) == 0 {
 			continue
