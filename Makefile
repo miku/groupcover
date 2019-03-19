@@ -9,7 +9,7 @@ $(TARGETS): %: cmd/%/main.go
 	go build -o $@ $<
 
 clean:
-	rm -f groupcover
+	rm -f $(TARGETS)
 	rm -f groupcover_*.deb
 	rm -f groupcover-*.rpm
 
