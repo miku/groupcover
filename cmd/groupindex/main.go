@@ -18,6 +18,7 @@ import (
 
 var (
 	server = flag.String("server", "", "SOLR server, hostport plus core, e.g. http://1.2.3.4:8081/solr/biblio")
+	prefs  = flag.String("prefs", "85 55 89 60 50 105 34 101 53 49 28 48 121", "most preferred first")
 )
 
 // WithLabels for intermediate schema fragment.
@@ -46,9 +47,10 @@ type SelectResponse struct {
 	} `json:"responseHeader"`
 }
 
-// fetchDocuments fetches documents for a given doi.
+// fetchDocuments fetches documents for a given identifier.
 func fetchDocuments(doi string) (*SelectResponse, error) {
-	// http://172.18.113.7:8085/solr/biblio/select?wt=json&q="10.17145/jab.18.002
+	// The identifier has no single field, we assume the DOI is unique.
+	// Prefixes might be a problem.
 	link := fmt.Sprintf(`http://172.18.113.7:8085/solr/biblio/select?wt=json&q="%s"`, doi)
 	resp, err := http.Get(link)
 	if err != nil {
