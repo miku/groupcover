@@ -23,8 +23,9 @@ var (
 
 // WithLabels for intermediate schema fragment.
 type WithLabels struct {
-	Labels []string `json:"x.labels"`
-	DOI    string   `json:"doi"`
+	SourceID string   `json:"finc.source_id"`
+	Labels   []string `json:"x.labels"`
+	DOI      string   `json:"doi"`
 }
 
 // SelectResponse with reduced fields.
@@ -32,7 +33,7 @@ type SelectResponse struct {
 	Response struct {
 		Docs []struct {
 			Institution []string `json:"institution"`
-			SourceId    string   `json:"source_id"`
+			SourceID    string   `json:"source_id"`
 		} `json:"docs"`
 		NumFound int64 `json:"numFound"`
 		Start    int64 `json:"start"`
@@ -104,6 +105,10 @@ func main() {
 			log.Println(err)
 			continue
 		}
-		fmt.Printf("%s => %d\n", doc.DOI, sr.Response.NumFound)
+		for _, indexed := range sr.Response.Docs {
+			fmt.Printf("[%s] %s, [%s] %s\n",
+				doc.SourceID, doc.Labels, indexed.SourceID, indexed.Institution)
+		}
+		// fmt.Printf("%s => %d\n", doc.DOI, sr.Response.NumFound)
 	}
 }
