@@ -1,0 +1,27 @@
+# Maintainer: Martin Czygan <martin.czygan@uni-leipzig.de>
+
+pkgname=groupcover
+pkgver=0.0.12
+pkgrel=0
+pkgdesc="Very ungeneric fffline deduplication tool."
+arch=('i686' 'x86_64')
+url="https://github.com/miku/groupcover"
+license=('GPL')
+makedepends=('go' 'git')
+options=('!strip' '!emptydirs')
+source=("${url}/archive/v${pkgver}.tar.gz")
+sha256sums=('d16d9091cf72271c9ae0549359078c8bdccf86b52b09216b12bb28b6e1000a32')
+_gourl='github.com/miku/groupcover/cmd/...'
+
+prepare() {
+  export GOPATH="${srcdir}"
+  go get -u -v -f ${_gourl}
+}
+
+package() {
+  install -Dm 775 "${srcdir}/bin/${pkgname}" "${pkgdir}/usr/bin/${pkgname}"
+  install -Dm 775 "${srcdir}/${pkgname}-${pkgver}/docs/${pkgname}.1" "${pkgdir}/usr/share/man/man1/${pkgname}.1"
+}
+
+# vim:set ft=sh ts=2 sw=2 et:
+
