@@ -7,7 +7,7 @@ Test drive
 ----------
 
 ```shell
-$ go get github.com/miku/groupcover/cmd/groupcover
+$ go install github.com/miku/groupcover/cmd/groupcover@latest
 ```
 
 Or via [packages](https://github.com/miku/groupcover/releases).
