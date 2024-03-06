@@ -1,6 +1,6 @@
-//  Copyright 2016 by Leipzig University Library, http://ub.uni-leipzig.de
-//                    The Finc Authors, http://finc.info
-//                    Martin Czygan, <martin.czygan@uni-leipzig.de>
+//	Copyright 2016 by Leipzig University Library, http://ub.uni-leipzig.de
+//	                  The Finc Authors, http://finc.info
+//	                  Martin Czygan, <martin.czygan@uni-leipzig.de>
 //
 // This file is part of some open source application.
 //
@@ -18,7 +18,6 @@
 // along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 //
 // @license GPL-3.0+ <http://spdx.org/licenses/GPL-3.0+>
-//
 package groupcover
 
 import (
@@ -103,10 +102,9 @@ func ListChooser(prefs []string) ChoiceFunc {
 		}
 		// Take note of position of each element in preferences.
 		positions := make([]int, len(s))
-
 		// Remember, if intersection between preferences and options is empty.
 		intersectionEmpty := true
-
+		// Loop over options and preferences, noting where they match.
 		for i, c := range s {
 			for j, p := range prefs {
 				if c == p {
@@ -115,13 +113,11 @@ func ListChooser(prefs []string) ChoiceFunc {
 				}
 			}
 		}
-
 		// If there is no intersection between preferences and options,
 		// fallback to LexChoice (somewhat randomly).
 		if intersectionEmpty {
 			return LexChoice(s)
 		}
-
 		// Otherwise return the most preferred option.
 		sort.Ints(positions)
 		return prefs[positions[0]]
@@ -159,14 +155,13 @@ func ColumnLower(k int) AttrFunc {
 func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc RewriterFunc) error {
 	cw := csv.NewWriter(w)
 	cr := csv.NewReader(r)
-
 	// If FieldsPerRecord is negative, no check is made and records may have a
 	// variable number of fields.
 	cr.FieldsPerRecord = -1
-
-	var prev string
-	var group [][]string
-
+	var (
+		prev  string
+		group [][]string
+	)
 	for {
 		record, err := cr.Read()
 		if err == io.EOF {
@@ -195,7 +190,6 @@ func GroupRewrite(r io.Reader, w io.Writer, attrFunc AttrFunc, rewriterFunc Rewr
 		group = append(group, record)
 		prev = value
 	}
-
 	// Final group.
 	regroup, err := rewriterFunc(group)
 	if err != nil {
@@ -214,19 +208,15 @@ func SimpleRewriter(preferences Preferences) RewriterFunc {
 		if len(records) < 2 {
 			return nil, nil
 		}
-
 		// Only keep comparable records (row with at least four columns).
 		var valid [][]string
-
 		for _, record := range records {
 			if len(record) < 4 {
 				continue
 			}
 			valid = append(valid, record)
 		}
-
 		records = valid
-
 		// For each key get the associated groups.
 		groupsPerKey := make(map[string][]string)
 		for _, record := range records {
@@ -234,41 +224,33 @@ func SimpleRewriter(preferences Preferences) RewriterFunc {
 				groupsPerKey[key] = append(groupsPerKey[key], record[1])
 			}
 		}
-
 		// For each key (isil) determine the preferred group (source identifier).
 		preferred := make(map[string]string)
 		for key, groups := range groupsPerKey {
 			f := preferences.withDefaults(key)
 			preferred[key] = f(groups)
 		}
-
 		// Collect changed records here.
 		var changedRecords [][]string
-
 		// For each record, check the group and list the ISIL (keys) for which
 		// this group is the preferred.
 		for _, record := range records {
 			var updated []string
 			id, group, keys := record[0], record[1], record[3:]
-
 			for _, key := range keys {
 				if preferred[key] == group {
 					updated = append(updated, key)
 				}
 			}
-
 			sort.Strings(keys)
 			sort.Strings(updated)
-
 			// Keep only lines that changed.
 			if reflect.DeepEqual(keys, updated) {
 				continue
 			}
-
 			if Verbose {
 				log.Printf("%s -> %s [%s]", keys, updated, id)
 			}
-
 			// Assemble a new record.
 			record := append([]string{record[0], record[1], record[2]}, updated...)
 			changedRecords = append(changedRecords, record)

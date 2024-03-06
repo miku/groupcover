@@ -48,7 +48,6 @@ func TestListChooser(t *testing.T) {
 			},
 		},
 	}
-
 	for _, c := range cases {
 		choiceFunc := ListChooser(c.preferences)
 		for _, ch := range c.choices {
@@ -77,7 +76,6 @@ func TestLexChoice(t *testing.T) {
 			},
 		},
 	}
-
 	for _, c := range cases {
 		for _, ch := range c.choices {
 			r := LexChoice(ch.given)
@@ -108,7 +106,6 @@ func TestPreferencesWithDefaults(t *testing.T) {
 			fragment: "groupcover.ListChooser",
 		},
 	}
-
 	for _, c := range cases {
 		f := c.prefs.withDefaults("<MISS>")
 		name := runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
@@ -161,7 +158,6 @@ ai-49-aHR0cDovL2R4LmRvaS5vcmcvMTAuMzQxNC9tZTEzLTAxLTAxMzQ,49,https://doi.org/10.
 			err:      nil,
 		},
 	}
-
 	for _, c := range cases {
 		var buf bytes.Buffer
 		err := GroupRewrite(c.reader, &buf, c.attrFunc, c.rewriter)

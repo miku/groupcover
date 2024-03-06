@@ -46,12 +46,10 @@ var (
 
 func main() {
 	flag.Parse()
-
 	if *version {
 		fmt.Println(Version)
 		os.Exit(0)
 	}
-
 	if *cpuprofile != "" {
 		f, err := os.Create(*cpuprofile)
 		if err != nil {
@@ -60,13 +58,10 @@ func main() {
 		pprof.StartCPUProfile(f)
 		defer pprof.StopCPUProfile()
 	}
-
 	if *column < 1 {
 		log.Fatal("column index must be positive")
 	}
-
 	groupcover.Verbose = *verbose
-
 	var attrFunc groupcover.AttrFunc
 	switch *lowerCase {
 	case true:
@@ -74,9 +69,7 @@ func main() {
 	default:
 		attrFunc = groupcover.Column(*column - 1)
 	}
-
 	preferences := groupcover.Preferences{}
-
 	// Parse preferences, if given.
 	if *prefs != "" {
 		fields := strings.Fields(*prefs)
@@ -86,10 +79,8 @@ func main() {
 		// Adjust the default ChoiceFunc.
 		preferences.Default = groupcover.ListChooser(fields)
 	}
-
 	// A simple rewriter, that considers per-key preferences.
 	rewriter := groupcover.SimpleRewriter(preferences)
-
 	// Read from stdin, write to stdout, use third column as grouping criteria
 	// and rewriter as rewriter.
 	if err := groupcover.GroupRewrite(os.Stdin, os.Stdout, attrFunc, rewriter); err != nil {
