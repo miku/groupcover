@@ -1,6 +1,6 @@
 Summary:    Group deduplication.
 Name:       groupcover
-Version:    0.0.12
+Version:    0.1.0
 Release:    0
 License:    GPL
 BuildArch:  x86_64
